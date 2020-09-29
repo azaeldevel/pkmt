@@ -22,7 +22,8 @@
 
 int main(int argc, char* argv[])
 {
-	pkmt::Interpret inter;
+	pkmt::ConfigureLFS confglfs;
+	pkmt::Interpret inter(confglfs);
 	try
 	{
 		inter.execute(argc,argv);

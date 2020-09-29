@@ -13,6 +13,49 @@
 namespace pkmt
 {
 
+
+
+ConfigureLFS::ConfigureLFS()
+{
+	LFS="/mnt/lfs";
+	LFS_PART="/dev/sda14";
+	LFS_REPO_TMPSYS="/home/azael/develop/lfs/8.4/pkm/tmpsys";
+	PKM="/home/azael/develop/lfs/8.4/pkm";
+	LFS_TGT="x86_64-lfs-linux-gnu";
+}
+
+
+
+
+
+
+Interpret::Interpret(const Configure& configure)
+{
+	this->configure = &configure;
+}
+void Interpret::prephost_sync(int argc, char* argv[])
+{
+	std::string parms ;
+	writeParamschar(parms,argc,argv);
+	std::string cmd = "./prephost-sync ";
+	cmd = cmd + " " + ((ConfigureLFS*)configure)->LFS_REPO_TMPSYS + " " + ((ConfigureLFS*)configure)->LFS + " " + ((ConfigureLFS*)configure)->PKM ;
+	//std::cout << "Ejecutando : "<< cmd << "\n";
+	system (cmd.c_str());
+}
+void Interpret::prephost_remove(int argc, char* argv[])
+{
+	std::string cmd = "./prephost-remove ";
+	cmd = cmd + " " + ((ConfigureLFS*)configure)->LFS_PART + " " + ((ConfigureLFS*)configure)->LFS;
+	//std::cout << "Ejecutando : "<< cmd << "\n";
+	system (cmd.c_str());
+}
+void Interpret::prephost_install(int argc, char* argv[])
+{
+	std::string cmd = "./prephost-install ";
+	cmd = cmd + " " + ((ConfigureLFS*)configure)->LFS_PART + " " + ((ConfigureLFS*)configure)->LFS;
+	//std::cout << "Ejecutando : "<< cmd << "\n";
+	system (cmd.c_str());
+}
 void Interpret::writeParamschar (std::string& argout, int argc, char *argv[])
 {
 	for(int i = 0; i < argc; i++)
@@ -20,12 +63,12 @@ void Interpret::writeParamschar (std::string& argout, int argc, char *argv[])
 		argout = argout + " " + argv[i];
 	}
 }
-void Interpret::build(int argc, char* argv[])
+void Interpret::prephost_build(int argc, char* argv[])
 {
 	std::string parms ;
 	writeParamschar(parms,argc,argv);
-	std::string cmd = "prephost-build ";
-	cmd += parms;
+	std::string cmd = "./prephost-build ";
+	cmd = cmd + " -f begin " + ((ConfigureLFS*)configure)->LFS + "/sources " + ((ConfigureLFS*)configure)->LFS_TGT + " " + ((ConfigureLFS*)configure)->LFS ;
 	//std::cout << "Ejecutando : "<< cmd << "\n";
 	system (cmd.c_str());
 }
@@ -33,7 +76,19 @@ void Interpret::prephost(int argc, char* argv[])
 {
 	if(strcmp(argv[0],"build") == 0)
 	{
-		build(argc-1,argv+1);
+		prephost_build(argc-1,argv+1);
+	}
+	else if(strcmp(argv[0],"install") == 0)
+	{
+		prephost_install(argc-1,argv+1);
+	}
+	else if(strcmp(argv[0],"remove") == 0)
+	{
+		prephost_remove(argc-1,argv+1);
+	}
+	else if(strcmp(argv[0],"sync") == 0)
+	{
+		prephost_sync(argc-1,argv+1);
 	}
 	else
 	{
@@ -69,10 +124,6 @@ void Interpret::pkmt(int argc, char* argv[])
 		throw msg;
 	}
 }
-Interpret::Interpret()
-{
-	//this->argc =argc;
-	//this->argv = argv;
-}
+
 	
 }
