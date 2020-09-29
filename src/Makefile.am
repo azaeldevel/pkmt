@@ -14,7 +14,8 @@ AM_CFLAGS =\
 bin_PROGRAMS = pkmt
 
 pkmt_SOURCES = \
-	main.cc
+	main.cc \
+	commands.cc
 
 pkmt_LDFLAGS = 
 

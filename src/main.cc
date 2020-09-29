@@ -1,4 +1,3 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*-  */
 /*
  * main.cc
  * Copyright (C) 2020 Azael R. <azael.devel@gmail.com>
@@ -19,9 +18,20 @@
 
 #include <iostream>
 
-int main()
+#include "commands.hh"
+
+int main(int argc, char* argv[])
 {
-	std::cout << "Hello world!" << std::endl;
+	pkmt::Interpret inter;
+	try
+	{
+		inter.execute(argc,argv);
+	}
+	catch(std::string msg)
+	{
+		std::cerr << msg << "\n";
+	}
+
 	return 0;
 }
 
