@@ -32,7 +32,7 @@ void Interpret::prephost_build(int argc, char* argv[])
 	std::string cmd = "pkmt-prephost-build ";
 	std::string strfromparam = "begin";
 	if(argc >= 1) strfromparam = argv[0];
-	cmd = cmd + " -f " + strfromparam + " " + ((bdt::HeaderLFS*)configure)->getLFS() + "/sources " + ((bdt::HeaderLFS*)configure)->getLFS_TGT() + " " + ((bdt::HeaderLFS*)configure)->getLFS() ;
+	cmd = cmd + " -f " + strfromparam + " " + ((bdt::HeaderLFS*)configure)->getLFS() + "/tools/sources " + ((bdt::HeaderLFS*)configure)->getLFS_TGT() + " " + ((bdt::HeaderLFS*)configure)->getLFS() ;
 	//std::cout << "Ejecutando : "<< cmd << "\n";
 	system (cmd.c_str());
 }
