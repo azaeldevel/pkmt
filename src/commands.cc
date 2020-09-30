@@ -30,7 +30,9 @@ void Interpret::writeParamschar (std::string& argout, int argc, char *argv[])
 void Interpret::prephost_build(int argc, char* argv[])
 {
 	std::string cmd = "pkmt-prephost-build ";
-	cmd = cmd + " -f begin " + ((bdt::HeaderLFS*)configure)->getLFS() + "/sources " + ((bdt::HeaderLFS*)configure)->getLFS_TGT() + " " + ((bdt::HeaderLFS*)configure)->getLFS() ;
+	std::string strfromparam = "begin";
+	if(argc >= 1) strfromparam = argv[0];
+	cmd = cmd + " -f " + strfromparam + " " + ((bdt::HeaderLFS*)configure)->getLFS() + "/sources " + ((bdt::HeaderLFS*)configure)->getLFS_TGT() + " " + ((bdt::HeaderLFS*)configure)->getLFS() ;
 	//std::cout << "Ejecutando : "<< cmd << "\n";
 	system (cmd.c_str());
 }
