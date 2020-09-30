@@ -1,7 +1,6 @@
-dnl Process this file with autoconf to produce a configure script.
-dnl Created by Anjuta application wizard.
 
-AC_INIT(pkmt, 0.1.0)
+
+AC_INIT(pkmt, 0.1.0-alpha1, azael.devel@gmail.com)
 
 AC_CONFIG_HEADERS([config.h])
 
@@ -17,7 +16,9 @@ AC_PROG_CXX
 
 
 
+PKG_CHECK_MODULES(OCTETOS_CORE,octetos-core)
 
+PKG_CHECK_MODULES(BDT,bdt)
 
 
 
@@ -26,5 +27,4 @@ AC_PROG_CXX
 AC_OUTPUT([
 Makefile
 src/Makefile
-
 ])

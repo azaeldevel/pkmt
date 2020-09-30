@@ -1,6 +1,4 @@
-## Process this file with automake to produce Makefile.in
 
-## Created by Anjuta
 
 AM_CPPFLAGS = \
 	-DPACKAGE_LOCALE_DIR=\""$(localedir)"\" \
@@ -13,12 +11,14 @@ AM_CFLAGS =\
 
 bin_PROGRAMS = pkmt
 
+dist_bin_SCRIPTS = pkmt-prephost-build
+
 pkmt_SOURCES = \
 	main.cc \
 	commands.cc
 
 pkmt_LDFLAGS = 
 
-pkmt_LDADD = 
-
+pkmt_LDADD = $(BDT_LIBS)
+pkmt_CPPFLAGS = $(BDT_CFLAGS)
 

@@ -22,7 +22,7 @@
 
 int main(int argc, char* argv[])
 {
-	pkmt::ConfigureLFS confglfs;
+	bdt::HeaderLFS confglfs;
 	pkmt::Interpret inter(confglfs);
 	try
 	{

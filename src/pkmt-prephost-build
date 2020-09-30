@@ -1,0 +1,224 @@
+#!/bin/bash
+set -e
+
+if [ ! "$1" = "-f" ]
+then
+	echo "Especifique el inicio del proceso."
+	exit
+fi
+
+LFS_SOURCES=$3
+LFS_TGT=$4
+LFS=$5
+SANDBOX=$(mktemp -d -t sandbox-XXXXXXXXXX)
+
+case $2 in
+
+begin)
+	cd $SANDBOX
+	;&
+	
+binutils-step1)
+	echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+	echo "> Binutils - Step 1"
+	echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+	cd $SANDBOX
+	$LFS/tools/tmpsys/binutils.sh $LFS_SOURCES $LFS $LFS_TGT $SANDBOX
+	;&
+	
+gcc-step1)
+	echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+	echo "> GCC - Step 1"
+	echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+	cd $SANDBOX
+	$LFS/tools/tmpsys/gcc.sh $LFS_SOURCES $LFS $LFS_TGT $SANDBOX
+	;&
+	
+linux-header)
+	echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+	echo "> Linux Headers"
+	echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+	cd $SANDBOX
+	$LFS/tools/tmpsys/linux-header.sh $LFS_SOURCES $LFS $LFS_TGT $SANDBOX
+	;&
+	
+glibc)
+	echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+	echo "> glibc"
+	echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+	cd $SANDBOX
+	$LFS/tools/tmpsys/glibc.sh $LFS_SOURCES $LFS $LFS_TGT $SANDBOX	
+	;&
+	
+libstdc++)
+	echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+	echo "> libstdc++"
+	echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+	$LFS/tools/tmpsys/libstdc++.sh $LFS_SOURCES $LFS $LFS_TGT $SANDBOX
+	;&
+	
+binutils-step2)
+	echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+	echo "> Binutils - Step 2"
+	echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+	cd $SANDBOX
+	$LFS/tools/tmpsys/binutils-2.sh $LFS_SOURCES $LFS $LFS_TGT $SANDBOX
+	;&
+	
+gcc-step2)
+	echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+	echo "> GCC - Step 2"
+	echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+	cd $SANDBOX
+	$LFS/tools/tmpsys/gcc-2.sh $LFS_SOURCES $LFS $LFS_TGT $SANDBOX
+	;&
+tcl)
+	echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+	echo "> TCL"
+	echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+	cd $SANDBOX
+	$LFS/tools/tmpsys/tcl.sh  $LFS_SOURCES $LFS $LFS_TGT $SANDBOX
+	;&
+	
+expect)
+	echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+	echo "> expected"
+	echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+	cd $SANDBOX
+	$LFS/tools/tmpsys/expect.sh  $LFS_SOURCES $LFS $LFS_TGT	 $SANDBOX
+	;&
+	
+dejagnu)
+	echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+	echo "> dejagnu"
+	echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+	cd $SANDBOX
+	$LFS/tools/tmpsys/dejagnu.sh  $LFS_SOURCES $LFS $LFS_TGT $SANDBOX
+	;&
+	
+m4)
+	echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+	echo "> m4"
+	echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+	cd $SANDBOX
+	$LFS/tools/tmpsys/m4.sh  $LFS_SOURCES $LFS $LFS_TGT $SANDBOX
+	;&
+	
+ncurses)
+	echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+	echo "> ncurses"
+	echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+	cd $SANDBOX
+	$LFS/tools/tmpsys/ncurses.sh  $LFS_SOURCES $LFS $LFS_TGT $SANDBOX
+	;&
+	
+bash-step)
+	echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+	echo "> bash"
+	echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+	cd $SANDBOX
+	$LFS/tools/tmpsys/bash.sh $LFS_SOURCES $LFS $LFS_TGT $SANDBOX
+	;&
+	
+bison)
+	echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+	echo "> bison"
+	echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+	cd $SANDBOX
+	$LFS/tools/tmpsys/bison.sh  $LFS_SOURCES $LFS $LFS_TGT $SANDBOX
+	;&
+	
+bzip)
+	echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+	echo "> bzip"
+	echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+	cd $SANDBOX
+	$LFS/tools/tmpsys/bzip.sh  $LFS_SOURCES $LFS $LFS_TGT $SANDBOX
+	;&
+	
+coreutils)
+	echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+	echo "> coreutils"
+	echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+	cd $SANDBOX
+	$LFS/tools/tmpsys/coreutils.sh  $LFS_SOURCES $LFS $LFS_TGT $SANDBOX
+	;&
+	
+diffutils)
+	echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+	echo "> diffutils"
+	echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+	cd $SANDBOX
+	$LFS/tools/tmpsys/diffutils.sh  $LFS_SOURCES $LFS $LFS_TGT $SANDBOX
+	;&
+	
+file-step)
+	echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+	echo "> file"
+	echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+	cd $SANDBOX
+	$LFS/tools/tmpsys/file.sh  $LFS_SOURCES $LFS $LFS_TGT $SANDBOX
+	;&
+	
+findutils)
+	echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+	echo "> findutils"
+	echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+	cd $SANDBOX
+	$LFS/tools/tmpsys/findutils.sh $LFS_SOURCES $LFS $LFS_TGT $SANDBOX
+	;&
+	
+gawk-step)
+	echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+	echo "> gawk"
+	echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+	cd $SANDBOX
+	$LFS/tools/tmpsys/gawk.sh  $LFS_SOURCES $LFS $LFS_TGT $SANDBOX
+	;&
+	
+gettext)
+	echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+	echo "> gettext"
+	echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+	cd $SANDBOX
+	$LFS/tools/tmpsys/gettext.sh  $LFS_SOURCES $LFS $LFS_TGT $SANDBOX
+	;&
+	
+grep-step)
+	echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+	echo "> grep"
+	echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+	cd $SANDBOX
+	$LFS/tools/tmpsys/grep.sh  $LFS_SOURCES $LFS $LFS_TGT $SANDBOX
+	;&
+	
+gzip-step)
+	echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+	echo "> gzip"
+	echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+	cd $SANDBOX
+	$LFS/tools/tmpsys/gzip.sh  $LFS_SOURCES $LFS $LFS_TGT $SANDBOX
+	;&
+	
+make-step)
+	echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+	echo "> make"
+	echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+	cd $SANDBOX
+	$LFS/tools/tmpsys/make.sh  $LFS_SOURCES $LFS $LFS_TGT $SANDBOX
+	;&
+	
+#./$LFS/tools/tmpsys/patch.sh  $LFS_SOURCES $LFS $LFS_TGT $SANDBOX
+#./$LFS/tools/tmpsys/perl.sh $LFS_SOURCES $LFS $LFS_TGT $SANDBOX
+#./$LFS/tools/tmpsys/python.sh $LFS_SOURCES $LFS $LFS_TGT $SANDBOX
+#./$LFS/tools/tmpsys/sed.sh $LFS_SOURCES $LFS $LFS_TGT $SANDBOX
+#./$LFS/tools/tmpsys/tar.sh $LFS_SOURCES $LFS $LFS_TGT $SANDBOX
+#./$LFS/tools/tmpsys/texinfo.sh $LFS_SOURCES $LFS $LFS_TGT $SANDBOX
+#./$LFS/tools/tmpsys/xz.sh $LFS_SOURCES $LFS $LFS_TGT $SANDBOX
+*)
+	echo "Paquete desconocido: '$2'"
+	exit
+    ;;
+esac
+
+rm -rf $SANDBOX
