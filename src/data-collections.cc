@@ -23,6 +23,8 @@
 
 #include <octetos/coreutils/shell.hh>
 #include <iostream>
+#include <libgen.h>
+
 
 #include "data.hh"
 
@@ -58,14 +60,10 @@ namespace pkmt
 			{
 				continue;
 			}
-			else if(file.compare("data") == 0)
-			{
-				continue;
-			}
 			
 			
 			std::cout << "\t\t" << file << "\n";
-			pkg = new Package(filename + "/" + file);
+			pkg = new Package(filename + "/" + file,basename((char*)filename.c_str()),file);
 			packages.insert(std::pair<std::string,Package*>(file,pkg));				
 		}
 	}

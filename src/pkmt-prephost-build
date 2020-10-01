@@ -23,7 +23,7 @@ binutils-step1)
 	echo "> Binutils - Step 1"
 	echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 	cd $SANDBOX
-	$LFS/tools/tmpsys/binutils.sh $LFS_SOURCES $LFS $LFS_TGT $SANDBOX
+	$LFS/tools/tmpsys/binutils.sh $LFS_SOURCES $LFS $LFS_TGT $SANDBOX binutils 2.32
 	;&
 	
 gcc-step1)
@@ -31,7 +31,7 @@ gcc-step1)
 	echo "> GCC - Step 1"
 	echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
 	cd $SANDBOX
-	$LFS/tools/tmpsys/gcc.sh $LFS_SOURCES $LFS $LFS_TGT $SANDBOX
+	$LFS/tools/tmpsys/gcc.sh $LFS_SOURCES $LFS $LFS_TGT $SANDBOX gcc-step1 8.2.0
 	;&
 	
 linux-header)

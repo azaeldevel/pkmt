@@ -33,6 +33,24 @@
 namespace pkmt
 {
 
+class DataException : public std::exception
+{
+protected:
+	std::string describe;
+		
+public:
+	virtual const char* what() const throw();
+};
+
+class NotFoundDataException : public DataException
+{		
+public:
+	NotFoundDataException(const std::string& dn,const std::string& fn);
+	virtual const char* what() const throw();
+};
+
+
+
 /**
 *\brief x86_64,i386
 */
@@ -100,16 +118,42 @@ private:
 	std::string name;
 	std::string version;
 	std::string md5sum;
-	std::list<Package*> deps;
 	Phase phase;
 	Base base;
 	Manager manager;
+	std::list<Package*> deps;
 
 	//derived
 	std::string filename;
 
+	//getter and setter
+	const std::string& getFilename()const;
+	const std::string& getName()const;
+	const std::string& getVersion()const;
+
+	//
+	void readData();
+	void valid(const std::string& name,const std::string& ver);
 public:
-	Package(const std::string&);
+	Package(const std::string& fn, const std::string& name,const std::string& ver);
+
+	class InvalidDataValueException : public DataException
+	{
+	public:
+		enum Code
+		{
+			NAME,
+			VERSION,
+			MD5SUM,
+			PHASE,
+			BASE,
+			MANAGER
+		};
+
+		InvalidDataValueException(const std::string& fn,Code c,const Package&,const std::string& val);
+		virtual const char* what() const throw();
+
+	};
 };
 
 class Collections
@@ -159,15 +203,6 @@ public:
 	const std::string& operator = (const std::string&);
 	operator const std::string&()const;
 
-	class NotFoundDataException : public std::exception
-	{
-	private:
-		std::string describe;
-		
-	public:
-		NotFoundDataException(const std::string& dataname);
-		virtual const char* what() const throw();
-	};
 };
 
 

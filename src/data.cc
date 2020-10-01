@@ -31,7 +31,27 @@ namespace pkmt
 {
 
 
-
+	
+	
+	
+	
+	
+	NotFoundDataException::NotFoundDataException(const std::string& dn,const std::string& fn)
+	{
+		describe = "No se encontro el dato '";
+		describe += dn + "' en '" + fn + "'";
+	}
+	const char* NotFoundDataException::what() const throw()
+	{
+		return describe.c_str();
+	}
+	 
+	 
+	
+	const char* DataException::what() const throw()
+	{
+		return describe.c_str();
+	}
 	 
 
 	Manager::Manager() 

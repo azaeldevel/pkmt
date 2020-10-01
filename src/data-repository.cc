@@ -31,15 +31,7 @@ namespace pkmt
 {
 
 
-	Repository::NotFoundDataException::NotFoundDataException(const std::string& dataname)
-	{
-		describe = "No se encontro el dato '";
-		describe += dataname + "'";
-	}
-	const char* Repository::NotFoundDataException::what() const throw()
-	{
-		return describe.c_str();
-	}
+
 
 
 
@@ -125,7 +117,7 @@ namespace pkmt
 		}
 		catch(const libconfig::SettingNotFoundException &nfex)
 		{
-			throw NotFoundDataException("name");
+			throw NotFoundDataException("name",filename);
 		}
 		
 		try
@@ -134,7 +126,7 @@ namespace pkmt
 		}
 		catch(const libconfig::SettingNotFoundException &nfex)
 		{
-			throw NotFoundDataException("arch");
+			throw NotFoundDataException("arch",filename);
 		}
 		
 		try
@@ -143,7 +135,7 @@ namespace pkmt
 		}
 		catch(const libconfig::SettingNotFoundException &nfex)
 		{
-			throw NotFoundDataException("phase");
+			throw NotFoundDataException("phase",filename);
 		}
 		
 		try
@@ -152,7 +144,7 @@ namespace pkmt
 		}
 		catch(const libconfig::SettingNotFoundException &nfex)
 		{
-			throw NotFoundDataException("base");
+			throw NotFoundDataException("base",filename);
 		}
 	}
 	Repository::Repository()

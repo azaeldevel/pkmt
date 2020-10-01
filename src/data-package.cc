@@ -29,11 +29,133 @@
 
 namespace pkmt
 {
-
-	Package::Package(const std::string& fn)
+	
+	
+	Package::InvalidDataValueException::InvalidDataValueException(const std::string& fn,Code c,const Package& pkg,const std::string& val)
 	{
-		filename = fn;
+		switch(c)
+		{
+			case NAME:
+				describe += fn + " : ";	
+				describe += "El nombre de paquete deve coincidir con el nombre de la collecion.\n";
+				describe += "\t";	
+				describe += val + " != " + pkg.getName() ;
+			break;
+			case VERSION:
+				describe = fn + " : ";
+				describe += "La version de paquete deve coincidir con la version de la collecion.\n";	
+				describe += "\t";	
+				describe += val + " != " + pkg.getVersion() ;			
+			break;
+		}		
+	}
+	const char* Package::InvalidDataValueException::what() const throw()
+	{
+		return describe.c_str();
+	}
+	
+	const std::string& Package::getName()const
+	{
+		return name;
+	}
+	const std::string& Package::getVersion()const
+	{
+		return version;
+	}
+	const std::string& Package::getFilename()const
+	{
+		return filename;
+	}
+	void Package::valid(const std::string& name,const std::string& ver)
+	{
+		if(this->name.compare(name) != 0)
+		{
+			throw InvalidDataValueException(filename,InvalidDataValueException::NAME,*this,name);
+		}
+		if(this->version.compare(version) != 0)
+		{
+			throw InvalidDataValueException(filename,InvalidDataValueException::VERSION,*this,name);
+		}
+	}
+	void Package::readData()
+	{
+		libconfig::Config cfg;
+		
+		try
+		{
+			std::string datfile = filename + "/data";
+			cfg.readFile(datfile.c_str());
+		}
+		catch(const libconfig::ParseException &pex)
+		{
+			std::cerr << "Parse error at " << pex.getFile() << ":" << pex.getLine()
+				      << " - " << pex.getError() << std::endl;
+			return;
+		}
+		
+		
+		try
+		{
+			name = (const std::string&)cfg.lookup("name");
+		}
+		catch(const libconfig::SettingNotFoundException &nfex)
+		{
+			throw NotFoundDataException("name",filename);
+		}
+		
+		try
+		{
+			version = (const std::string&)cfg.lookup("version");
+		}
+		catch(const libconfig::SettingNotFoundException &nfex)
+		{
+			throw NotFoundDataException("version",filename);
+		}
+		
+		try
+		{
+			md5sum = (const std::string&)cfg.lookup("md5sum");
+		}
+		catch(const libconfig::SettingNotFoundException &nfex)
+		{
+			throw NotFoundDataException("md5sum",filename);
+		}
+		
+		try
+		{
+			phase = (const std::string&)cfg.lookup("phase");
+		}
+		catch(const libconfig::SettingNotFoundException &nfex)
+		{
+			throw NotFoundDataException("phase",filename);
+		}
+		
+		try
+		{
+			base = (const std::string&)cfg.lookup("base");
+		}
+		catch(const libconfig::SettingNotFoundException &nfex)
+		{
+			throw NotFoundDataException("base",filename);
+		}
+		
+		try
+		{
+			manager = (const std::string&)cfg.lookup("manager");
+		}
+		catch(const libconfig::SettingNotFoundException &nfex)
+		{
+			throw NotFoundDataException("manager",filename);
+		}
 	}
 
+	Package::Package(const std::string& fn, const std::string& name,const std::string& ver)
+	{
+		std::cout << "\t\t\t" << name << "\n";
+		std::cout << "\t\t\t" << ver << "\n";
+		filename = fn;
+		readData();
+		valid(name,ver);
+	}
 
 }
