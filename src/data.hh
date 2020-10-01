@@ -40,6 +40,7 @@ private:
 	std::string arch;
 
 public:
+	Architecture();
 	Architecture(const std::string&);
 	const std::string& operator = (const std::string&);
 	operator const std::string&()const;
@@ -55,6 +56,7 @@ private:
 
 public:
 	Phase(const std::string&);
+	Phase();
 	const std::string& operator = (const std::string&);
 	operator const std::string&()const;
 };
@@ -69,6 +71,7 @@ private:
 
 public:
 	Base(const std::string&);
+	Base();
 	const std::string& operator = (const std::string&);
 	operator const std::string&()const;
 };
@@ -109,11 +112,28 @@ private:
 	//derived
 	std::list<Collections*> packages;
 	std::string filename;
+
+	void read();
 public:
+	Repository(const std::string&);
+	Repository();
 	const std::string& getName()const;
 	const Architecture& getArchitecture()const;
 	const Phase& getPhase()const;
 	const Base& getBase()const;
+
+
+	const std::string& operator = (const std::string&);
+
+	class NotFoundDataException : public std::exception
+	{
+	private:
+		std::string describe;
+		
+	public:
+		NotFoundDataException(const std::string& dataname);
+		virtual const char* what() const throw();
+	};
 };
 
 

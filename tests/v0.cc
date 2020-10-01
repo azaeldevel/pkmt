@@ -2,10 +2,37 @@
 #include <CUnit/Basic.h>
 #include <octetos/core/Version.hh>
 #include <iostream>
+#include <libconfig.h++>
 
 
 #include "../src/data.hh"
 #include "config.h"
+
+
+
+void testRepositoryClass()
+{
+	pkmt::Repository repo;
+	try
+	{
+		repo = "/home/azael/develop/pkmt/src/tmpsys";
+	}
+	catch(libconfig::FileIOException ex)
+	{
+		std::cerr << ex.what() << "\n";
+		CU_ASSERT(false);
+		return;
+	}
+	std::cout << "Name repos : " << repo.getName() << "\n";
+}
+
+void testBaseClass()
+{
+	pkmt::Phase base("source");
+
+	std::string str = base;
+}
+
 
 
 void testPhaseClass()
@@ -66,6 +93,19 @@ int main(int argc, char *argv[])
 	}
 	
 	if ((NULL == CU_add_test(pSuite, "Testing Phase class.", testPhaseClass)))
+	{
+		CU_cleanup_registry();
+		return CU_get_error();
+	}
+	
+	if ((NULL == CU_add_test(pSuite, "Testing Base class.", testBaseClass)))
+	{
+		CU_cleanup_registry();
+		return CU_get_error();
+	}
+	
+	
+	if ((NULL == CU_add_test(pSuite, "Testing repository class.", testRepositoryClass)))
 	{
 		CU_cleanup_registry();
 		return CU_get_error();

@@ -19,13 +19,139 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * 
  * */
+
+
+#include <libconfig.h++>
+#include <iostream>
+
 #include "data.hh"
 
 
 namespace pkmt
 {
 
+	Repository::NotFoundDataException::NotFoundDataException(const std::string& dataname)
+	{
+		describe = "No se encontro el dato '";
+		describe += dataname + "'";
+	}
+	const char* Repository::NotFoundDataException::what() const throw()
+	{
+		return describe.c_str();
+	}
 
+
+
+
+	const std::string& Repository::getName()const
+	{
+		return name;
+	}
+	const Architecture& Repository::getArchitecture()const
+	{
+		return arch;
+	}
+	const Phase& Repository::getPhase()const
+	{
+		return phase;
+	}
+	const Base& Repository::getBase()const
+	{
+		return  base;
+	}
+	const std::string& Repository::operator = (const std::string& str)
+	{
+		filename = str + "/data";
+		read();
+	}
+	void Repository::read()
+	{
+		libconfig::Config cfg;
+		
+		try
+		{
+			cfg.readFile(filename.c_str());
+		}
+		catch(const libconfig::ParseException &pex)
+		{
+			std::cerr << "Parse error at " << pex.getFile() << ":" << pex.getLine()
+				      << " - " << pex.getError() << std::endl;
+			return;
+		}
+		
+		
+		try
+		{
+			name = (const std::string&)cfg.lookup("name");
+		}
+		catch(const libconfig::SettingNotFoundException &nfex)
+		{
+			throw NotFoundDataException("name");
+		}
+		
+		try
+		{
+			arch = cfg.lookup("arch");
+		}
+		catch(const libconfig::SettingNotFoundException &nfex)
+		{
+			throw NotFoundDataException("arch");
+		}
+		
+		try
+		{
+			phase = cfg.lookup("phase");
+		}
+		catch(const libconfig::SettingNotFoundException &nfex)
+		{
+			throw NotFoundDataException("phase");
+		}
+		
+		try
+		{
+			base = cfg.lookup("base");
+		}
+		catch(const libconfig::SettingNotFoundException &nfex)
+		{
+			throw NotFoundDataException("base");
+		}
+	}
+	Repository::Repository()
+	{
+	}
+	Repository::Repository(const std::string& fn)
+	{
+		filename = fn;
+		read();
+	}
+
+
+		 
+
+
+	Base::Base() 
+	{
+	}
+	Base::Base(const std::string& str) 
+	{
+		base = str;
+	}
+	const std::string& Base::operator = (const std::string& str)
+	{
+		base = str;
+		return str;
+	}
+	Base::operator const std::string&()const
+	{
+		return base;
+	}
+
+
+
+	  
+	Phase::Phase()
+	{
+	}
 	Phase::Phase(const std::string& str)
 	{
 		phase = str;
@@ -41,6 +167,14 @@ namespace pkmt
 	}
 
 
+
+
+
+
+	 
+	Architecture::Architecture()
+	{
+	}
 	Architecture::Architecture(const std::string& str)
 	{
 		arch = str;
