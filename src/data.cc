@@ -43,6 +43,10 @@ namespace pkmt
 
 
 
+	Repository::operator const std::string&()const
+	{
+		return filename;
+	}
 	const std::string& Repository::getName()const
 	{
 		return name;

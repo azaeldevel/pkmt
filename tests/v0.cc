@@ -15,7 +15,9 @@ void testRepositoryClass()
 	pkmt::Repository repo;
 	try
 	{
-		repo = "/home/azael/develop/pkmt/src/tmpsys";
+		std::string dir = PATHDIR;
+		dir += "/src/tmpsys";
+		repo = dir;
 	}
 	catch(libconfig::FileIOException ex)
 	{
@@ -23,7 +25,7 @@ void testRepositoryClass()
 		CU_ASSERT(false);
 		return;
 	}
-	std::cout << "Name repos : " << repo.getName() << "\n";
+	//std::cout << "Name repos : " << repo.getName() << "\n";
 }
 
 void testBaseClass()

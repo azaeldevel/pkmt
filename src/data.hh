@@ -124,6 +124,7 @@ public:
 
 
 	const std::string& operator = (const std::string&);
+	operator const std::string&()const;
 
 	class NotFoundDataException : public std::exception
 	{

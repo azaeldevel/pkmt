@@ -24,7 +24,7 @@ PKG_CHECK_MODULES(BDT,bdt)
 
 PKG_CHECK_MODULES(CUNIT,cunit)
 
-
+AC_DEFINE_UNQUOTED([PATHDIR], ["$ac_abs_confdir"],[Define to the read-only architecture-independent data directory.])
 
 
 AC_OUTPUT([
