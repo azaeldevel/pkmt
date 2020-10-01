@@ -19,38 +19,41 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * 
  * */
-
-
-#ifndef PKMT_COMMANDS
-#define PKMT_COMMANDS
-
-#include <bdt/header.hh>
+#include "data.hh"
 
 
 namespace pkmt
 {
 
-class Interpret
-{
-private:
-	const bdt::Header* configure;
-	//
-	void pkmt(int argc, char* argv[]);
-	void prephost(int argc, char* argv[]);
-	void prephost_build(int argc, char* argv[]);
-	void writeParamschar (std::string& argout, int argc, char *argv[]);
-	
-public:
-	Interpret(const bdt::Header& configure);
-	void execute(int argc, char* argv[]);
-};
 
-class pkmt
-{
+	Phase::Phase(const std::string& str)
+	{
+		phase = str;
+	}
+	const std::string& Phase::operator = (const std::string& str)
+	{
+		phase = str;
+		return str;
+	}
+	Phase::operator const std::string&()const
+	{
+		return phase;
+	}
 
-};
+
+	Architecture::Architecture(const std::string& str)
+	{
+		arch = str;
+	}
+	const std::string& Architecture::operator = (const std::string& str)
+	{
+		arch = str;
+		return str;
+	}
+	Architecture::operator const std::string&()const
+	{
+		return arch;
+	}
 
 
 }
-
-#endif

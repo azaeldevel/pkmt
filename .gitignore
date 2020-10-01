@@ -12,3 +12,10 @@ install-sh
 missing
 pkmt.anjuta
 src/*~
+compile
+config.guess
+config.sub
+ltmain.sh
+src/tmpsys
+test-driver
+

@@ -122,23 +122,23 @@ do
       fi
       if grep "^IT_PROG_INTLTOOL" configure.ac >/dev/null; then
         echo "Running intltoolize..."
-	intltoolize --copy --force --automake
+		intltoolize --copy --force --automake
       fi
       if grep "^AM_PROG_XML_I18N_TOOLS" configure.ac >/dev/null; then
         echo "Running xml-i18n-toolize..."
-	xml-i18n-toolize --copy --force --automake
+		xml-i18n-toolize --copy --force --automake
       fi
-      if grep "^LT_INIT" configure.ac >/dev/null; then
-	if test -z "$NO_LIBTOOLIZE" ; then 
-	  echo "Running libtoolize..."
-	  libtoolize --force --copy
-	fi
-      fi
+      #if grep "^LT_INIT" configure.ac >/dev/null; then
+		  #if test -z "$NO_LIBTOOLIZE" ; then 
+		  	echo "Running libtoolize..."
+		  	libtoolize --force --copy
+		  #fi
+      #fi
       echo "Running aclocal $aclocalinclude ..."
       aclocal $aclocalinclude
       if grep "^A[CM]_CONFIG_HEADER" configure.ac >/dev/null; then
-	echo "Running autoheader..."
-	autoheader
+		echo "Running autoheader..."
+		autoheader
       fi
       echo "Running automake --gnu $am_opt ..."
       automake --add-missing --copy --gnu $am_opt
