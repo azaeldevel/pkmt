@@ -23,12 +23,23 @@
 
 #include <octetos/coreutils/shell.hh>
 #include <iostream>
+#include <sys/stat.h>
+
 
 #include "data.hh"
 
 
 namespace pkmt
 {
+	
+	Package::IncompleteException::IncompleteException(const std::string& fn,const std::string& comp)
+	{
+		describe = fn + " : " + "No se encomtro '" + comp + "'";
+	}
+	const char* Package::IncompleteException::what() const throw()
+	{
+		return describe.c_str();
+	}
 	
 	
 	Package::InvalidDataValueException::InvalidDataValueException(const std::string& fn,Code c,const Package& pkg,const std::string& val)
@@ -54,6 +65,23 @@ namespace pkmt
 		return describe.c_str();
 	}
 	
+	
+	const std::string& Package::getMD5sum()const
+	{
+		return md5sum;
+	}
+	const Phase& Package::getPhase()const
+	{
+		return phase;
+	}
+	const Base& Package::getBase()const
+	{
+		return base;
+	}
+	const Manager& Package::getManager()const
+	{
+		return manager;
+	}
 	const std::string& Package::getName()const
 	{
 		return name;
@@ -66,7 +94,7 @@ namespace pkmt
 	{
 		return filename;
 	}
-	void Package::valid(const std::string& name,const std::string& ver)
+	void Package::valid(const std::string& name,const std::string& ver)const
 	{
 		if(this->name.compare(name) != 0)
 		{
@@ -75,6 +103,28 @@ namespace pkmt
 		if(this->version.compare(version) != 0)
 		{
 			throw InvalidDataValueException(filename,InvalidDataValueException::VERSION_AMBIGUOUS,*this,name);
+		}
+		
+		
+	}
+	bool Package::fileExists(const std::string& fn)
+	{
+		struct stat buffer;
+		int exist = stat(fn.c_str(),&buffer);
+		if(exist == 0)
+		    return true;
+		else // -1
+        return false;
+	}
+	void Package::readLevelExecution()
+	{
+		if(fileExists(filename + "/" + (const std::string&)base))
+		{
+			levelexe = 1;
+		}
+		else
+		{
+			throw IncompleteException(filename,base);
 		}
 	}
 	void Package::readData()
@@ -147,12 +197,15 @@ namespace pkmt
 		{
 			throw NotFoundDataException("manager",filename);
 		}
+		
+		
 	}
 
 	Package::Package(const std::string& fn, const std::string& name,const std::string& ver)
 	{
 		std::cout << "\t\t\t" << name << "\n";
 		std::cout << "\t\t\t" << ver << "\n";
+		levelexe = 0;
 		filename = fn;
 		readData();
 		valid(name,ver);

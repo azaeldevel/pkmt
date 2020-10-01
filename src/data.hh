@@ -49,7 +49,12 @@ public:
 	virtual const char* what() const throw();
 };
 
-
+class GenericException : public DataException
+{		
+public:
+	GenericException(const std::string&);
+	virtual const char* what() const throw();
+};
 
 /**
 *\brief x86_64,i386
@@ -82,7 +87,7 @@ public:
 };
 
 /**
-*\brief source,binary
+*\brief package,source,binary
 */
 class Base
 {
@@ -123,6 +128,9 @@ private:
 	Manager manager;
 	std::list<Package*> deps;
 
+	//
+	short levelexe;
+
 	//derived
 	std::string filename;
 
@@ -130,10 +138,17 @@ private:
 	const std::string& getFilename()const;
 	const std::string& getName()const;
 	const std::string& getVersion()const;
+	const std::string& getMD5sum()const;
+	const Phase& getPhase()const;
+	const Base& getBase()const;
+	const Manager& getManager()const;
 
 	//
 	void readData();
-	void valid(const std::string& name,const std::string& ver);
+	void valid(const std::string& name,const std::string& ver)const;
+	void readLevelExecution();
+	bool fileExists(const std::string&);
+
 public:
 	Package(const std::string& fn, const std::string& name,const std::string& ver);
 
@@ -153,6 +168,12 @@ public:
 		InvalidDataValueException(const std::string& fn,Code c,const Package&,const std::string& val);
 		virtual const char* what() const throw();
 
+	};
+	class IncompleteException : public DataException
+	{		
+	public:
+		IncompleteException(const std::string& fn,const std::string& comp);
+		virtual const char* what() const throw();
 	};
 };
 
