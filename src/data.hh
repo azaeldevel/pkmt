@@ -142,8 +142,8 @@ public:
 	public:
 		enum Code
 		{
-			NAME,
-			VERSION,
+			NAME_AMBIGUOUS,
+			VERSION_AMBIGUOUS,
 			MD5SUM,
 			PHASE,
 			BASE,

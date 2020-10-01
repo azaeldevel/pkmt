@@ -35,13 +35,13 @@ namespace pkmt
 	{
 		switch(c)
 		{
-			case NAME:
+			case NAME_AMBIGUOUS:
 				describe += fn + " : ";	
 				describe += "El nombre de paquete deve coincidir con el nombre de la collecion.\n";
 				describe += "\t";	
 				describe += val + " != " + pkg.getName() ;
 			break;
-			case VERSION:
+			case VERSION_AMBIGUOUS:
 				describe = fn + " : ";
 				describe += "La version de paquete deve coincidir con la version de la collecion.\n";	
 				describe += "\t";	
@@ -70,11 +70,11 @@ namespace pkmt
 	{
 		if(this->name.compare(name) != 0)
 		{
-			throw InvalidDataValueException(filename,InvalidDataValueException::NAME,*this,name);
+			throw InvalidDataValueException(filename,InvalidDataValueException::NAME_AMBIGUOUS,*this,name);
 		}
 		if(this->version.compare(version) != 0)
 		{
-			throw InvalidDataValueException(filename,InvalidDataValueException::VERSION,*this,name);
+			throw InvalidDataValueException(filename,InvalidDataValueException::VERSION_AMBIGUOUS,*this,name);
 		}
 	}
 	void Package::readData()
