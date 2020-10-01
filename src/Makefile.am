@@ -25,6 +25,6 @@ pkmt_LDFLAGS =
 pkmt_LDADD = $(BDT_LIBS)
 pkmt_CPPFLAGS = $(BDT_CFLAGS)
 
-libpkmt_la_SOURCES = data.cc
-libpkmt_la_LIBADD = $(BDT_LIBS)
-libpkmt_la_CPPFLAGS = $(BDT_CFLAGS)
+libpkmt_la_SOURCES = data.cc data-collections.cc data-repository.cc data-package.cc
+libpkmt_la_LIBADD = $(BDT_LIBS) $(OCTETOS_CORE_LIBS) $(OCTETOS_COREUTILS_LIBS)
+libpkmt_la_CPPFLAGS = $(BDT_CFLAGS) $(OCTETOS_CORE_CFLAGS) $(OCTETOS_COREUTILS_CFLAGS)

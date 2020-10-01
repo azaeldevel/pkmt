@@ -26,6 +26,8 @@
 #include <string>
 #include <list>
 #include <vector>
+#include <map>
+
 
 
 namespace pkmt
@@ -76,28 +78,57 @@ public:
 	operator const std::string&()const;
 };
 
+/**
+*\brief autotools,cmake
+*/
+class Manager
+{
+private:
+	std::string manager;
+
+public:
+	Manager(const std::string&);
+	Manager();
+	const std::string& operator = (const std::string&);
+	operator const std::string&()const;
+};
+
 class Package
 {
 private:
 	//from data file
-	std::string filename;
 	std::string name;
 	std::string version;
 	std::string md5sum;
 	std::list<Package*> deps;
 	Phase phase;
 	Base base;
+	Manager manager;
+
+	//derived
+	std::string filename;
 
 public:
-
+	Package(const std::string&);
 };
 
 class Collections
 {
 private:
 	std::string filename;
-	std::list<Package*> packages;
+	std::map<std::string,Package*> packages;
+	
+	//funciontions
+	void read();
+public:
+	Collections();
+	~Collections();
+	Collections(const std::string&);
 
+	//getter and setter
+	const std::string& getFilename()const;
+
+	//funciontions
 };
 
 class Repository
@@ -110,13 +141,15 @@ private:
 	Base base;
 
 	//derived
-	std::list<Collections*> packages;
+	std::map<std::string,Collections*> collections;
 	std::string filename;
 
-	void read();
+	void readData();
+	void readCollentions();
 public:
 	Repository(const std::string&);
 	Repository();
+	~Repository();
 	const std::string& getName()const;
 	const Architecture& getArchitecture()const;
 	const Phase& getPhase()const;

@@ -10,6 +10,17 @@
 
 
 
+
+void testManagerClass()
+{
+	pkmt::Manager manager("autotools");
+
+	std::string str = manager;
+}
+
+
+
+
 void testRepositoryClass()
 {
 	pkmt::Repository repo;
@@ -106,6 +117,12 @@ int main(int argc, char *argv[])
 		return CU_get_error();
 	}
 	
+	
+	if ((NULL == CU_add_test(pSuite, "Testing Manager class.", testManagerClass)))
+	{
+		CU_cleanup_registry();
+		return CU_get_error();
+	}
 	
 	if ((NULL == CU_add_test(pSuite, "Testing repository class.", testRepositoryClass)))
 	{
