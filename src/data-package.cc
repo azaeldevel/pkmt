@@ -127,7 +127,62 @@ namespace pkmt
 			throw IncompleteException(filename,base);
 		}
 	}
-	void Package::readData()
+	void Package::readDependencies()
+	{	
+		libconfig::Config cfg;
+		
+		try
+		{
+			std::string datfile = filename + "/data";
+			cfg.readFile(datfile.c_str());
+		}
+		catch(const libconfig::ParseException &pex)
+		{
+			std::cerr << "Parse error at " << pex.getFile() << ":" << pex.getLine()
+				      << " - " << pex.getError() << std::endl;
+			return;
+		}
+		
+		
+		//
+		const libconfig::Setting& root = cfg.getRoot();
+		const libconfig::Setting *depsread;
+  		try
+  		{
+			depsread = &root["deps"];			
+		}
+		catch(const libconfig::SettingNotFoundException &nfex)
+  		{
+  			throw NotFoundDataException("dep",filename);
+  		}
+  
+		int count = deps.size();
+		Package* depdata;
+
+    	for(int i = 0; i < count; ++i)
+    	{
+      		const libconfig::Setting &depread = depsread[i];
+			
+			try
+			{
+				depread.lookupValue("name",depdata->name);
+			}
+			catch(const libconfig::SettingNotFoundException &nfex)
+			{
+				throw NotFoundDataException("name",filename);
+			}				
+			try
+			{
+				depread.lookupValue("version",depdata->version_req);
+			}
+			catch(const libconfig::SettingNotFoundException &nfex)
+			{
+				//la version es opcional.
+				;
+			}			
+    	}
+	}
+	void Package::readDataIndex()
 	{
 		libconfig::Config cfg;
 		
@@ -161,7 +216,25 @@ namespace pkmt
 		{
 			throw NotFoundDataException("version",filename);
 		}
+				
+	}
+	void Package::readDataFull()
+	{
+		libconfig::Config cfg;
 		
+		try
+		{
+			std::string datfile = filename + "/data";
+			cfg.readFile(datfile.c_str());
+		}
+		catch(const libconfig::ParseException &pex)
+		{
+			std::cerr << "Parse error at " << pex.getFile() << ":" << pex.getLine()
+				      << " - " << pex.getError() << std::endl;
+			return;
+		}
+		
+				
 		try
 		{
 			md5sum = (const std::string&)cfg.lookup("md5sum");
@@ -198,16 +271,29 @@ namespace pkmt
 			throw NotFoundDataException("manager",filename);
 		}
 		
+
+		
+		//optional values
+		try
+		{
+			passingtype = (const std::string&)cfg.lookup("passingtype");
+		}
+		catch(const libconfig::SettingNotFoundException &nfex)
+		{
+			;
+		}
 		
 	}
 
 	Package::Package(const std::string& fn, const std::string& name,const std::string& ver)
 	{
-		std::cout << "\t\t\t" << name << "\n";
-		std::cout << "\t\t\t" << ver << "\n";
+		//std::cout << "\t\t\t" << name << "\n";
+		//std::cout << "\t\t\t" << ver << "\n";
 		levelexe = 0;
+		passingtype = "enviroment";
+		
 		filename = fn;
-		readData();
+		readDataIndex();
 		valid(name,ver);
 	}
 

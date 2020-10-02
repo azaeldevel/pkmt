@@ -57,6 +57,21 @@ public:
 };
 
 /**
+*\brief enviroment,parameter
+*/
+class PassingType
+{
+private:
+	std::string type;
+
+public:
+	PassingType();
+	PassingType(const std::string&);
+	const std::string& operator = (const std::string&);
+	operator const std::string&()const;
+};
+
+/**
 *\brief x86_64,i386
 */
 class Architecture
@@ -122,17 +137,31 @@ private:
 	//from data file
 	std::string name;
 	std::string version;
+	std::string version_req;
 	std::string md5sum;
 	Phase phase;
 	Base base;
 	Manager manager;
-	std::list<Package*> deps;
+	std::list<Package*> deps;	
+	PassingType passingtype;
 
 	//
 	short levelexe;
 
 	//derived
 	std::string filename;
+
+
+	//
+	void readDataIndex();
+	void readDataFull();
+	void valid(const std::string& name,const std::string& ver)const;
+	void readLevelExecution();
+	bool fileExists(const std::string&);
+
+public:
+	Package(const std::string& fn, const std::string& name,const std::string& ver);
+	void readDependencies();
 
 	//getter and setter
 	const std::string& getFilename()const;
@@ -142,15 +171,6 @@ private:
 	const Phase& getPhase()const;
 	const Base& getBase()const;
 	const Manager& getManager()const;
-
-	//
-	void readData();
-	void valid(const std::string& name,const std::string& ver)const;
-	void readLevelExecution();
-	bool fileExists(const std::string&);
-
-public:
-	Package(const std::string& fn, const std::string& name,const std::string& ver);
 
 	class InvalidDataValueException : public DataException
 	{
@@ -194,6 +214,8 @@ public:
 	const std::string& getFilename()const;
 
 	//funciontions
+	std::map<std::string,Package*>::iterator begin();
+	std::map<std::string,Package*>::iterator end();
 };
 
 class Repository
@@ -223,6 +245,8 @@ public:
 
 	const std::string& operator = (const std::string&);
 	operator const std::string&()const;
+	Package* find(const std::string& name);
+	Package* find(const std::string& name,const std::string& version);
 
 };
 

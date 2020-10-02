@@ -31,6 +31,24 @@ namespace pkmt
 {
 
 
+
+	PassingType::PassingType() 
+	{
+	}
+	PassingType::PassingType(const std::string& str) 
+	{
+		type = str;
+	}
+	const std::string& PassingType::operator = (const std::string& str)
+	{
+		type = str;
+		return str;
+	}
+	PassingType::operator const std::string&()const
+	{
+		return type;
+	}
+
 	
 	
 	

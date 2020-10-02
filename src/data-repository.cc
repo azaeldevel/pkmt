@@ -33,9 +33,28 @@ namespace pkmt
 
 
 
+	
 
-
-
+	Package* Repository::find(const std::string& name)
+	{
+		std::map<std::string,Collections*>::iterator it;
+		it = collections.find(name);
+		if(it == collections.end())
+		{
+			return NULL;
+		}
+		Collections* c = it->second;
+		std::map<std::string,Package*>::iterator pkIt;
+		pkIt = c->begin();
+		if(pkIt == c->end())
+		{
+			return NULL;
+		}
+		else
+		{
+			return pkIt->second;
+		}
+	}
 	Repository::operator const std::string&()const
 	{
 		return filename;
@@ -89,7 +108,7 @@ namespace pkmt
 			}
 
 			
-			std::cout << "\t" << file << "\n";
+			//std::cout << "\t" << file << "\n";
 			coll = new Collections(filename + "/" + file);
 			collections.insert(std::pair<std::string,Collections*>(file,coll));			
 		}

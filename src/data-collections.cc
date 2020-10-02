@@ -32,6 +32,14 @@
 namespace pkmt
 {
 
+	std::map<std::string,Package*>::iterator Collections::end()
+	{
+		return packages.end();
+	}
+	std::map<std::string,Package*>::iterator Collections::begin()
+	{
+		return packages.begin();
+	}
 	Collections::~Collections()
 	{
 		for(std::pair<std::string,Package*> pkg : packages)
@@ -62,7 +70,7 @@ namespace pkmt
 			}
 			
 			
-			std::cout << "\t\t" << file << "\n";
+			//std::cout << "\t\t" << file << "\n";
 			pkg = new Package(filename + "/" + file,basename((char*)filename.c_str()),file);
 			packages.insert(std::pair<std::string,Package*>(file,pkg));				
 		}

@@ -36,7 +36,21 @@ void testRepositoryClass()
 		CU_ASSERT(false);
 		return;
 	}
-	//std::cout << "Name repos : " << repo.getName() << "\n";
+	std::cout << "Name repos : " << repo.getName() << "\n";
+	CU_ASSERT(true);
+	
+	pkmt::Package* pktmpsys = repo.find("tmpsys");
+	if(pktmpsys == NULL)
+	{
+		std::cerr << "No se encontro el paquete tmpsys\n";
+		CU_ASSERT(false);
+	}
+	else
+	{
+		std::cout << "Paquete : " << pktmpsys->getName() << " in " << pktmpsys->getFilename() << "\n";
+		CU_ASSERT(true);
+	}
+	
 }
 
 void testBaseClass()
