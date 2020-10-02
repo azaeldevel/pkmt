@@ -25,7 +25,7 @@
 
 #include <string>
 #include <map>
-
+#include <list>
 
 
 namespace pkmt
@@ -173,8 +173,9 @@ public:
 	const Base& getBase()const;
 	const Manager& getManager()const;
 	std::map<std::string,Package*>& getDependencies();
+	void createStackDeps(std::list<Package*>&)const;
 
-
+	
 	class InvalidDataValueException : public DataException
 	{
 	public:

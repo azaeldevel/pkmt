@@ -22,7 +22,7 @@ pkmt_SOURCES = \
 
 pkmt_LDFLAGS = 
 
-pkmt_LDADD = $(BDT_LIBS)
+pkmt_LDADD = $(BDT_LIBS) libpkmt.la
 pkmt_CPPFLAGS = $(BDT_CFLAGS)
 
 libpkmt_la_SOURCES = data.cc data-collections.cc data-repository.cc data-package.cc

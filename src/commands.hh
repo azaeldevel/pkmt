@@ -37,7 +37,6 @@ private:
 	//
 	void pkmt(int argc, char* argv[]);
 	void lfs(int argc, char* argv[]);
-	void lfs_tmpsys(int argc, char* argv[]);
 	void writeParamschar (std::string& argout, int argc, char *argv[]);
 	
 public:
@@ -45,12 +44,12 @@ public:
 	void execute(int argc, char* argv[]);
 };
 
-class Builder
+class BuilderLFS
 {
 private:
 
 public:
-	void prephost_build(int argc, char* argv[]);
+	void tmpsys(int argc, char* argv[]);
 };
 
 

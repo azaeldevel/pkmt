@@ -24,16 +24,85 @@
 #include <stdio.h>
 #include <string.h>
 #include <string>
-#include<stdlib.h>
+#include <stdlib.h>
 #include <iostream>
+#include <libconfig.h++>
+
+
 
 #include "commands.hh"
-
+#include "data.hh"
+#include "config.h"
 
 
 
 namespace pkmt
 {
+
+
+
+void BuilderLFS::tmpsys(int argc, char* argv[])
+{
+	pkmt::Repository repo;
+	std::string dir;
+	try
+	{
+		dir = PATHDIR;
+		dir += "/src/tmpsys";
+		repo = dir;
+	}
+	catch(const libconfig::FileIOException &fioex)
+	{
+		std::cerr << "\n" << fioex.what() << "\n";
+		return;
+	}
+	std::cout << "\n";
+	std::cout << "Name repos : " << repo.getName() << "\n";
+
+	
+	pkmt::Package* pktmpsys = repo.find("tmpsys");
+	if(pktmpsys == NULL)
+	{
+		std::cerr << "No se encontro el paquete tmpsys\n";
+		return;
+	}
+	else
+	{
+		std::cout << "Paquete : " << pktmpsys->getName() << " in " << pktmpsys->getFilename() << "\n";
+
+		try
+		{
+			pktmpsys->readDependencies();
+		}
+		catch(pkmt::NotFoundDependencyException e)
+		{
+			std::cerr << "Fallo la lectura de dependencias\n";
+			std::cerr << e.what() << "\n";
+		}
+		catch(std::exception& e)
+		{
+			std::cerr << "Fallo la lectura de dependencias\n";
+			std::cerr << e.what() << "\n";
+			return;
+		}
+		
+		
+		std::list<Package*> stack;
+		pktmpsys->createStackDeps(stack);
+		
+		for(Package* pk : stack)
+		{
+			std::cout << pk->getName() << "\n";
+		}
+	}
+}
+
+
+
+
+
+
+
 
 
 
@@ -49,20 +118,12 @@ void Interpret::writeParamschar (std::string& argout, int argc, char *argv[])
 		argout = argout + " " + argv[i];
 	}
 }
-void Interpret::lfs_tmpsys(int argc, char* argv[])
-{
-	std::string cmd = "pkmt-prephost-build ";
-	std::string strfromparam = "begin";
-	if(argc >= 1) strfromparam = argv[0];
-	cmd = cmd + " -f " + strfromparam + " " + ((bdt::HeaderLFS*)configure)->getLFS() + "/tools/sources " + ((bdt::HeaderLFS*)configure)->getLFS_TGT() + " " + ((bdt::HeaderLFS*)configure)->getLFS() ;
-	//std::cout << "Ejecutando : "<< cmd << "\n";
-	system (cmd.c_str());
-}
 void Interpret::lfs(int argc, char* argv[])
 {
 	if(strcmp(argv[0],"tmpsys") == 0)
 	{
-		lfs_tmpsys(argc-1,argv+1);
+		BuilderLFS buider;
+		buider.tmpsys(argc-1,argv+1);
 	}
 	else
 	{

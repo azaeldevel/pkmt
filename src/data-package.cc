@@ -69,7 +69,14 @@ namespace pkmt
 	
 	
 	
-	
+	void Package::createStackDeps(std::list<Package*>& stack)const
+	{
+		for(auto it = deps.begin() ;  it != deps.end();it++)
+		{
+			it->second->createStackDeps(stack);
+			stack.push_back(it->second);
+		}
+	}
 	std::map<std::string,Package*>& Package::getDependencies()
 	{
 		return deps;
