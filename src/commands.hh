@@ -36,8 +36,8 @@ private:
 	const bdt::Header* configure;
 	//
 	void pkmt(int argc, char* argv[]);
-	void prephost(int argc, char* argv[]);
-	void prephost_build(int argc, char* argv[]);
+	void lfs(int argc, char* argv[]);
+	void lfs_tmpsys(int argc, char* argv[]);
 	void writeParamschar (std::string& argout, int argc, char *argv[]);
 	
 public:
@@ -45,9 +45,12 @@ public:
 	void execute(int argc, char* argv[]);
 };
 
-class pkmt
+class Builder
 {
+private:
 
+public:
+	void prephost_build(int argc, char* argv[]);
 };
 
 

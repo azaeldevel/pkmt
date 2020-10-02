@@ -137,7 +137,7 @@ namespace pkmt
 	}
 	void Package::readDependencies(bool recursive)
 	{	
-		//std::cout << "Package::readDependencies : " << filename << "\n";
+		//std::cout << "Package::readDependencies : >>" << filename << "\n";
 		libconfig::Config cfg;
 		
 		try
@@ -152,7 +152,7 @@ namespace pkmt
 			return;
 		}
 		
-		
+		//std::cout << "Package::readDependencies : <<" << filename << "\n";
 		//
 		const libconfig::Setting& root = cfg.getRoot();
 		const libconfig::Setting* depsread;
@@ -227,7 +227,7 @@ namespace pkmt
 	void Package::readDataIndex()
 	{
 		libconfig::Config cfg;
-		
+		//std::cout << "Package::readDataIndex : >>" << filename << "\n";
 		try
 		{
 			std::string datfile = filename + "/data";
@@ -239,6 +239,7 @@ namespace pkmt
 				      << " - " << pex.getError() << std::endl;
 			return;
 		}
+		//std::cout << "Package::readDataIndex : <<" << filename << "\n";
 		
 		
 		try

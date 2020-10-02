@@ -49,7 +49,7 @@ void Interpret::writeParamschar (std::string& argout, int argc, char *argv[])
 		argout = argout + " " + argv[i];
 	}
 }
-void Interpret::prephost_build(int argc, char* argv[])
+void Interpret::lfs_tmpsys(int argc, char* argv[])
 {
 	std::string cmd = "pkmt-prephost-build ";
 	std::string strfromparam = "begin";
@@ -58,11 +58,11 @@ void Interpret::prephost_build(int argc, char* argv[])
 	//std::cout << "Ejecutando : "<< cmd << "\n";
 	system (cmd.c_str());
 }
-void Interpret::prephost(int argc, char* argv[])
+void Interpret::lfs(int argc, char* argv[])
 {
-	if(strcmp(argv[0],"build") == 0)
+	if(strcmp(argv[0],"tmpsys") == 0)
 	{
-		prephost_build(argc-1,argv+1);
+		lfs_tmpsys(argc-1,argv+1);
 	}
 	else
 	{
@@ -87,9 +87,9 @@ void Interpret::execute(int argc, char* argv[])
 }
 void Interpret::pkmt(int argc, char* argv[])
 {
-	if(strcmp(argv[0],"prephost") == 0)
+	if(strcmp(argv[0],"lfs") == 0)
 	{
-		prephost(argc-1,argv+1);
+		lfs(argc-1,argv+1);
 	}
 	else
 	{

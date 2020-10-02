@@ -25,15 +25,16 @@ void testManagerClass()
 void testRepositoryClass()
 {
 	pkmt::Repository repo;
+	std::string dir;
 	try
 	{
-		std::string dir = PATHDIR;
+		dir = PATHDIR;
 		dir += "/src/tmpsys";
 		repo = dir;
 	}
-	catch(libconfig::FileIOException ex)
+	catch(const libconfig::FileIOException &fioex)
 	{
-		std::cerr << ex.what() << "\n";
+		std::cerr << "\n" << fioex.what() << "\n";
 		CU_ASSERT(false);
 		return;
 	}
@@ -165,7 +166,7 @@ int main(int argc, char *argv[])
 		return CU_get_error();
 	}
 	
-	if ((NULL == CU_add_test(pSuite, "Testing repository class.", testRepositoryClass)))
+	if ((NULL == CU_add_test(pSuite, "Testing Repository class.", testRepositoryClass)))
 	{
 		CU_cleanup_registry();
 		return CU_get_error();

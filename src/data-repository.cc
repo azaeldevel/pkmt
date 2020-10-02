@@ -121,6 +121,14 @@ namespace pkmt
 			{
 				continue;
 			}
+			else if(file.compare(".gitignore") == 0)
+			{
+				continue;
+			}
+			else if(file.compare(".git") == 0)
+			{
+				continue;
+			}
 
 			
 			//std::cout << "\tCollection: " << file << "\n";
@@ -131,7 +139,7 @@ namespace pkmt
 	void Repository::readData()
 	{
 		libconfig::Config cfg;
-		
+		//std::cout << "Repository::readData : >>" << filename << "\n";
 		try
 		{
 			std::string datfile = filename + "/data";
@@ -143,6 +151,7 @@ namespace pkmt
 				      << " - " << pex.getError() << std::endl;
 			return;
 		}
+		//std::cout << "Repository::readData : <<" << filename << "\n";
 		
 		
 		try
