@@ -32,12 +32,26 @@
 namespace pkmt
 {
 
+	Package* Collections::find(const std::string& ver)
+	{
+		std::map<std::string,Package*>::iterator it = packages.find(ver);
+		if(it == packages.end())
+		{
+			return NULL;
+		}
+		else
+		{
+			it->second->readDataFull();
+			return it->second;
+		}
+	}
 	std::map<std::string,Package*>::iterator Collections::end()
 	{
 		return packages.end();
 	}
 	std::map<std::string,Package*>::iterator Collections::begin()
 	{
+		packages.begin()->second->readDataFull();
 		return packages.begin();
 	}
 	Collections::~Collections()
@@ -70,16 +84,16 @@ namespace pkmt
 			}
 			
 			
-			//std::cout << "\t\t" << file << "\n";
-			pkg = new Package(filename + "/" + file,basename((char*)filename.c_str()),file);
+			//std::cout << "\t\tPaquete : " << file << "\n";
+			pkg = new Package(*repository,filename + "/" + file,basename((char*)filename.c_str()),file);
 			packages.insert(std::pair<std::string,Package*>(file,pkg));				
 		}
 	}
-	Collections::Collections()
+	Collections::Collections():repository(NULL)
 	{
 
 	}
-	Collections::Collections(const std::string& fn)
+	Collections::Collections(Repository& repo,const std::string& fn):repository(&repo)
 	{
 		filename = fn;
 		read();

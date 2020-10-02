@@ -66,6 +66,14 @@ namespace pkmt
 	}
 	
 	
+	
+	
+	
+	
+	std::map<std::string,Package*>& Package::getDependencies()
+	{
+		return deps;
+	}
 	const std::string& Package::getMD5sum()const
 	{
 		return md5sum;
@@ -127,8 +135,9 @@ namespace pkmt
 			throw IncompleteException(filename,base);
 		}
 	}
-	void Package::readDependencies()
+	void Package::readDependencies(bool recursive)
 	{	
+		//std::cout << "Package::readDependencies : " << filename << "\n";
 		libconfig::Config cfg;
 		
 		try
@@ -146,26 +155,30 @@ namespace pkmt
 		
 		//
 		const libconfig::Setting& root = cfg.getRoot();
-		const libconfig::Setting *depsread;
+		const libconfig::Setting* depsread;
   		try
   		{
 			depsread = &root["deps"];			
 		}
 		catch(const libconfig::SettingNotFoundException &nfex)
   		{
-  			throw NotFoundDataException("dep",filename);
+  			//no hay dependencias.
+  			return;
   		}
   
-		int count = deps.size();
-		Package* depdata;
-
+		int count = depsread->getLength();
+		if(count == 0) return;
+		
+		Package* deppkg;
+		//std::cout << "deps size = " << count << "\n";
     	for(int i = 0; i < count; ++i)
     	{
-      		const libconfig::Setting &depread = depsread[i];
+      		const libconfig::Setting &depread = (*depsread)[i];
+			std::string nm,ver;
 			
 			try
 			{
-				depread.lookupValue("name",depdata->name);
+				depread.lookupValue("name",nm);
 			}
 			catch(const libconfig::SettingNotFoundException &nfex)
 			{
@@ -173,13 +186,42 @@ namespace pkmt
 			}				
 			try
 			{
-				depread.lookupValue("version",depdata->version_req);
+				depread.lookupValue("version",ver);
 			}
 			catch(const libconfig::SettingNotFoundException &nfex)
 			{
 				//la version es opcional.
-				;
-			}			
+				ver = "";
+			}
+			
+			//std::cout << "dep {name =" << nm << "," << "ver=" << ver << "};\n"; 
+			if(ver.empty())
+			{
+				deppkg = repository->find(nm);	
+				if(deppkg != NULL)
+				{			
+					if(recursive) deppkg->readDependencies(recursive);
+					deps.insert(std::pair<std::string,Package*>(deppkg->getName(),deppkg));
+				}
+				else
+				{
+					throw NotFoundDependencyException(name,nm);
+				}
+			}
+			else
+			{
+				deppkg = repository->find(nm,ver);		
+				if(deppkg != NULL)
+				{		
+					if(recursive) deppkg->readDependencies(recursive);
+					deps.insert(std::pair<std::string,Package*>(deppkg->getName(),deppkg));
+				}
+				else
+				{
+					throw NotFoundDependencyException(name,nm);
+				}
+				
+			}
     	}
 	}
 	void Package::readDataIndex()
@@ -285,7 +327,7 @@ namespace pkmt
 		
 	}
 
-	Package::Package(const std::string& fn, const std::string& name,const std::string& ver)
+	Package::Package(Repository& repo,const std::string& fn, const std::string& name,const std::string& ver):repository(&repo)
 	{
 		//std::cout << "\t\t\t" << name << "\n";
 		//std::cout << "\t\t\t" << ver << "\n";

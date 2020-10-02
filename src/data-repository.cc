@@ -34,7 +34,22 @@ namespace pkmt
 
 
 	
-
+	
+	Package* Repository::find(const std::string& name,const std::string& version)
+	{
+		std::map<std::string,Collections*>::iterator it;
+		it = collections.find(name);
+		if(it == collections.end())
+		{
+			//std::cout << "No se encontro colecion : " << name << "\n";
+			return NULL;
+		}
+		else
+		{
+			//std::cout << "Se encontro colecion : " << name << "\n";
+			return it->second->find(version);
+		}	
+	}
 	Package* Repository::find(const std::string& name)
 	{
 		std::map<std::string,Collections*>::iterator it;
@@ -108,8 +123,8 @@ namespace pkmt
 			}
 
 			
-			//std::cout << "\t" << file << "\n";
-			coll = new Collections(filename + "/" + file);
+			//std::cout << "\tCollection: " << file << "\n";
+			coll = new Collections(*this,filename + "/" + file);
 			collections.insert(std::pair<std::string,Collections*>(file,coll));			
 		}
 	}

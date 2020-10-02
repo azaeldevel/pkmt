@@ -24,14 +24,14 @@
 #define PKMT_DATA_HH
 
 #include <string>
-#include <list>
-#include <vector>
 #include <map>
 
 
 
 namespace pkmt
 {
+class Repository;
+
 
 class DataException : public std::exception
 {
@@ -49,10 +49,10 @@ public:
 	virtual const char* what() const throw();
 };
 
-class GenericException : public DataException
+class NotFoundDependencyException : public DataException
 {		
 public:
-	GenericException(const std::string&);
+	NotFoundDependencyException(const std::string& pk,const std::string& dep);
 	virtual const char* what() const throw();
 };
 
@@ -142,11 +142,12 @@ private:
 	Phase phase;
 	Base base;
 	Manager manager;
-	std::list<Package*> deps;	
+	std::map<std::string,Package*> deps;	
 	PassingType passingtype;
 
 	//
 	short levelexe;
+	Repository* repository;
 
 	//derived
 	std::string filename;
@@ -154,14 +155,14 @@ private:
 
 	//
 	void readDataIndex();
-	void readDataFull();
 	void valid(const std::string& name,const std::string& ver)const;
 	void readLevelExecution();
 	bool fileExists(const std::string&);
 
 public:
-	Package(const std::string& fn, const std::string& name,const std::string& ver);
-	void readDependencies();
+	Package(Repository& repo, const std::string& fn, const std::string& name,const std::string& ver);
+	void readDataFull();
+	void readDependencies(bool recursive=true);
 
 	//getter and setter
 	const std::string& getFilename()const;
@@ -171,6 +172,8 @@ public:
 	const Phase& getPhase()const;
 	const Base& getBase()const;
 	const Manager& getManager()const;
+	std::map<std::string,Package*>& getDependencies();
+
 
 	class InvalidDataValueException : public DataException
 	{
@@ -203,12 +206,15 @@ private:
 	std::string filename;
 	std::map<std::string,Package*> packages;
 	
+	//
+	Repository* repository;
+
 	//funciontions
 	void read();
 public:
 	Collections();
 	~Collections();
-	Collections(const std::string&);
+	Collections(Repository& repo,const std::string&);
 
 	//getter and setter
 	const std::string& getFilename()const;
@@ -216,6 +222,7 @@ public:
 	//funciontions
 	std::map<std::string,Package*>::iterator begin();
 	std::map<std::string,Package*>::iterator end();
+	Package* find(const std::string& ver);
 };
 
 class Repository

@@ -31,6 +31,17 @@ namespace pkmt
 {
 
 
+	
+	NotFoundDependencyException::NotFoundDependencyException(const std::string& pk,const std::string& dep)
+	{
+		describe = "No se encontro el la dependencia '";
+		describe += dep + "' para el apquete '" + pk + "'";
+	}
+	const char* NotFoundDependencyException::what() const throw()
+	{
+		return describe.c_str();
+	}
+	
 
 	PassingType::PassingType() 
 	{

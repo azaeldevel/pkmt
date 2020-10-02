@@ -5,6 +5,7 @@
 #include <libconfig.h++>
 
 
+
 #include "../src/data.hh"
 #include "config.h"
 
@@ -36,6 +37,7 @@ void testRepositoryClass()
 		CU_ASSERT(false);
 		return;
 	}
+	std::cout << "\n";
 	std::cout << "Name repos : " << repo.getName() << "\n";
 	CU_ASSERT(true);
 	
@@ -44,10 +46,35 @@ void testRepositoryClass()
 	{
 		std::cerr << "No se encontro el paquete tmpsys\n";
 		CU_ASSERT(false);
+		return;
 	}
 	else
 	{
 		std::cout << "Paquete : " << pktmpsys->getName() << " in " << pktmpsys->getFilename() << "\n";
+		//pktmpsys->readDataFull();
+		try
+		{
+			pktmpsys->readDependencies();
+		}
+		catch(pkmt::NotFoundDependencyException e)
+		{
+			std::cerr << "Fallo la lectura de dependencias\n";
+			std::cerr << e.what() << "\n";
+			CU_ASSERT(false);
+		}
+		catch(std::exception& e)
+		{
+			std::cerr << "Fallo la lectura de dependencias\n";
+			std::cerr << e.what() << "\n";
+			CU_ASSERT(false);
+			return;
+		}
+		
+		for(auto it = pktmpsys->getDependencies().begin() ;  it != pktmpsys->getDependencies().end();it++)
+		{
+			std::cout << pktmpsys->getName() << " -> " << it->second->getName() << "\n";
+		}
+		
 		CU_ASSERT(true);
 	}
 	
