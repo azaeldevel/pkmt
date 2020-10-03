@@ -27,6 +27,7 @@
 #include <stdlib.h>
 #include <iostream>
 #include <libconfig.h++>
+#include <filesystem>
 
 
 
@@ -43,6 +44,7 @@ namespace pkmt
 
 void BuilderLFS::tmpsys(int argc, char* argv[])
 {
+	//std::cout << "Step 1 :  BuilderLFS::tmpsys \n";
 	pkmt::Repository repo;
 	std::string dir;
 	try
@@ -56,8 +58,9 @@ void BuilderLFS::tmpsys(int argc, char* argv[])
 		std::cerr << "\n" << fioex.what() << "\n";
 		return;
 	}
-	std::cout << "\n";
-	std::cout << "Name repos : " << repo.getName() << "\n";
+	//std::cout << "Step 2 :  BuilderLFS::tmpsys \n";
+	//std::cout << "\n";
+	//std::cout << "Name repos : " << repo.getName() << "\n";
 
 	
 	pkmt::Package* pktmpsys = repo.find("tmpsys");
@@ -68,7 +71,7 @@ void BuilderLFS::tmpsys(int argc, char* argv[])
 	}
 	else
 	{
-		std::cout << "Paquete : " << pktmpsys->getName() << " in " << pktmpsys->getFilename() << "\n";
+		//std::cout << "Paquete : " << pktmpsys->getName() << " in " << pktmpsys->getFilename() << "\n";
 
 		try
 		{
@@ -86,13 +89,58 @@ void BuilderLFS::tmpsys(int argc, char* argv[])
 			return;
 		}
 		
-		
+		char sandbox_template[] = "/tmp/sandbox-XXXXXXXXXXX";
+        char *sandbox_name = mkdtemp(sandbox_template);
+        //std::cout << "sandbox=" << sandbox_name << "\n";
 		std::list<Package*> stack;
 		pktmpsys->createStackDeps(stack);
+		coreutils::Enviroment* env;
+		bdt::HeaderLFS confglfs;
+		std::vector<coreutils::Enviroment*>* venv;
+		coreutils::Shell shell;
+		
 		
 		for(Package* pk : stack)
 		{
-			std::cout << pk->getName() << "\n";
+			shell.cd(sandbox_name);
+			std::vector<coreutils::Enviroment*> venv;
+			env = new coreutils::Enviroment();
+			env->name = "LFS_SOURCES";
+			#ifdef DEBUG
+			env->value = confglfs.getREPO_ORIGIN_SOURCES();
+			#else
+			env->value = confglfs.getLFS() + "/tools/sources";
+			#endif
+			venv.push_back(env);
+			env = new coreutils::Enviroment();
+			env->name = "LFS_TGT";
+			env->value = confglfs.getLFS_TGT();
+			venv.push_back(env);
+			env = new coreutils::Enviroment();
+			env->name = "LFS";
+			env->value = confglfs.getLFS();
+			venv.push_back(env);
+			env = new coreutils::Enviroment();
+			env->name = "PKNAME";
+			env->value = pk->getName();
+			venv.push_back(env);
+			env = new coreutils::Enviroment();
+			env->name = "PKVER";
+			env->value = pk->getVersion();
+			venv.push_back(env);
+			env = new coreutils::Enviroment();
+			env->name = "SANDBOX";
+			env->value = sandbox_name;
+			venv.push_back(env);
+			std::cout <<">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n";
+			std::cout <<">> Installing package : " << pk->getName() << "\n";
+			std::cout <<">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n";
+			pk->install(venv,shell);
+			for(coreutils::Enviroment* env : venv)
+			{
+				delete env;
+			}
+			
 		}
 	}
 }

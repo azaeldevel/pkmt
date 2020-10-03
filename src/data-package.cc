@@ -24,6 +24,9 @@
 #include <octetos/coreutils/shell.hh>
 #include <iostream>
 #include <sys/stat.h>
+#include <stdlib.h>
+
+
 
 
 #include "data.hh"
@@ -67,6 +70,19 @@ namespace pkmt
 	
 	
 	
+	
+	int Package::install(const std::vector<coreutils::Enviroment*> v,coreutils::Shell& s)
+	{
+		if(levelexe == 1)
+		{
+			std::string script = filename + "/" + (const std::string&)base;	
+			//std::cout << script << "\n";
+			s.set(v);
+			return s.execute(script);
+		}
+		
+		return -1;
+	}
 	
 	
 	void Package::createStackDeps(std::list<Package*>& stack)const
@@ -344,6 +360,9 @@ namespace pkmt
 		
 		filename = fn;
 		readDataIndex();
+		readLevelExecution();
+		
+		
 		valid(name,ver);
 	}
 

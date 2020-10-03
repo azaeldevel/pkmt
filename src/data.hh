@@ -26,11 +26,16 @@
 #include <string>
 #include <map>
 #include <list>
+#include <vector>
+#include <octetos/coreutils/shell.hh>
+
+
 
 
 namespace pkmt
 {
 class Repository;
+
 
 
 class DataException : public std::exception
@@ -175,6 +180,18 @@ public:
 	std::map<std::string,Package*>& getDependencies();
 	void createStackDeps(std::list<Package*>&)const;
 
+	//funciones de instalción
+	bool get();
+	bool check();
+	bool configure();
+	bool compile();
+	bool pre_install();
+	int install(const std::vector<coreutils::Enviroment*>,coreutils::Shell&);
+	bool pos_install();
+	bool build();
+	bool packing();//crea paquete binario
+	bool distribute();//colocar en el repositorio final
+	
 	
 	class InvalidDataValueException : public DataException
 	{
@@ -259,7 +276,10 @@ public:
 };
 
 
+class Builder
+{
 
+};
 
 }
 

@@ -95,16 +95,23 @@ namespace pkmt
 		filename = str;
 		readData();
 		readCollentions();
+		
+		return str;
 	}
 	void Repository::readCollentions()
 	{		
+	
+		//std::cout << "Repository::readCollentions 1: <<" << filename << "\n";
 		coreutils::Shell shell;
 
 		std::list<std::string> files;
 
+		//std::cout << "Repository::readCollentions 2: <<" << filename << "\n";
 		shell.cd(filename);
+		//std::cout << "Repository::readCollentions 3: <<" << filename << "\n";
 		
 		shell.ls(files);
+		//std::cout << "Repository::readCollentions 4: <<" << filename << "\n";
 		
 		Collections* coll;
 		for(const std::string& file : files)
@@ -135,11 +142,12 @@ namespace pkmt
 			coll = new Collections(*this,filename + "/" + file);
 			collections.insert(std::pair<std::string,Collections*>(file,coll));			
 		}
+		//std::cout << "Repository::readCollentions 5: <<" << filename << "\n";
 	}
 	void Repository::readData()
 	{
 		libconfig::Config cfg;
-		//std::cout << "Repository::readData : >>" << filename << "\n";
+		//std::cout << "Repository::readData 1: >>" << filename << "\n";
 		try
 		{
 			std::string datfile = filename + "/data";
@@ -151,7 +159,7 @@ namespace pkmt
 				      << " - " << pex.getError() << std::endl;
 			return;
 		}
-		//std::cout << "Repository::readData : <<" << filename << "\n";
+		//std::cout << "Repository::readData 2: <<" << filename << "\n";
 		
 		
 		try
@@ -189,6 +197,8 @@ namespace pkmt
 		{
 			throw NotFoundDataException("base",filename);
 		}
+		
+		//std::cout << "Repository::readData 3: <<" << filename << "\n";
 	}
 	Repository::Repository()
 	{
