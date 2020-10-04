@@ -144,12 +144,17 @@ void BuilderLFS::tmpsys(int argc, char* argv[])
 			int st = pk->install(venv,shell);
 			if(st == 130)
 			{
-				std::cout << "Manulmente terminado (ctrl + c)\n";
+				std::cerr << "\n\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n";
+				std::cerr << ">> Manulmente terminado (ctrl + c)\n";
+				std::cerr << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n";
 				return;
 			}
 			else if(st > 0)
 			{
-				std::cout << "Eror detectado ..\n";
+				
+				std::cerr << "\n\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n";
+				std::cerr << ">> Eror detectado ..\n";
+				std::cerr << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n";
 				return;
 			}
 			for(coreutils::Enviroment* env : venv)
