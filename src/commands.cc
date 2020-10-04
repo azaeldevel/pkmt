@@ -52,6 +52,7 @@ void BuilderLFS::tmpsys(int argc, char* argv[])
 		dir = PATHDIR;
 		dir += "/src/tmpsys";
 		repo = dir;
+		std::cout << "Repositorio de paquetes:" << dir << " \n";
 	}
 	catch(const libconfig::FileIOException &fioex)
 	{
