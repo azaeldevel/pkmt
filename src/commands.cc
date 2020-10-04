@@ -141,7 +141,17 @@ void BuilderLFS::tmpsys(int argc, char* argv[])
 			std::cout <<">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n";
 			std::cout <<">> Installing package : " << pk->getName() << "\n";
 			std::cout <<">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n";
-			pk->install(venv,shell);
+			int st = pk->install(venv,shell);
+			if(st == 130)
+			{
+				std::cout << "Manulmente terminado (ctrl + c)\n";
+				return;
+			}
+			else
+			{
+				std::cout << "Eror detectado ..\n";
+				return;
+			}
 			for(coreutils::Enviroment* env : venv)
 			{
 				delete env;
