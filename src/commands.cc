@@ -95,7 +95,7 @@ void BuilderLFS::tmpsys(int argc, char* argv[])
 			return;
 		}
 		
-		char sandbox_template[] = "/tmp/sandbox-XXXXXXXXXXX";
+		char sandbox_template[] = "/tmp/sandbox-XXXXXX";
         char *sandbox_name = mkdtemp(sandbox_template);
         //std::cout << "sandbox=" << sandbox_name << "\n";
 		std::list<Package*> stack;
