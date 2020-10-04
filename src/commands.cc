@@ -45,7 +45,6 @@ namespace pkmt
 void BuilderLFS::tmpsys(int argc, char* argv[])
 {
 	//std::cout << "Step 1 :  BuilderLFS::tmpsys \n";
-	std::cout << "Buscando repositorio de paquetes en :" << dir << " \n";
 	pkmt::Repository repo;
 	std::string dir;
 	try
@@ -57,6 +56,7 @@ void BuilderLFS::tmpsys(int argc, char* argv[])
 		bdt::HeaderLFS confglfs;
 		dir = confglfs.getLFS() + "/tools/tmpsys";
 		#endif
+		std::cout << "Buscando repositorio de paquetes en :" << dir << " \n";
 		repo = dir;
 	}
 	catch(const libconfig::FileIOException &fioex)
