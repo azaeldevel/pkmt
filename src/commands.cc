@@ -45,14 +45,19 @@ namespace pkmt
 void BuilderLFS::tmpsys(int argc, char* argv[])
 {
 	//std::cout << "Step 1 :  BuilderLFS::tmpsys \n";
+	std::cout << "Buscando repositorio de paquetes en :" << dir << " \n";
 	pkmt::Repository repo;
 	std::string dir;
 	try
 	{
+		#ifdef DEBUG
 		dir = PATHDIR;
 		dir += "/src/tmpsys";
+		#else
+		bdt::HeaderLFS confglfs;
+		dir = confglfs.getLFS() + "/tools/tmpsys";
+		#endif
 		repo = dir;
-		std::cout << "Repositorio de paquetes:" << dir << " \n";
 	}
 	catch(const libconfig::FileIOException &fioex)
 	{
