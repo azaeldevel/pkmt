@@ -147,7 +147,7 @@ void BuilderLFS::tmpsys(int argc, char* argv[])
 				std::cout << "Manulmente terminado (ctrl + c)\n";
 				return;
 			}
-			else
+			else if(st > 0)
 			{
 				std::cout << "Eror detectado ..\n";
 				return;
