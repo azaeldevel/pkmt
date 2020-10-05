@@ -33,7 +33,19 @@ namespace pkmt
 
 
 
-	
+	Repository* Repository::create(const std::string& fn, const std::list<Shell::pair_md5>& md5s)
+	{
+		Shell shell;
+		
+		if(shell.mkdir(fn,true) > 0)
+		{
+			return NULL;
+		}
+		
+		
+		
+		return NULL;
+	}
 	
 	Package* Repository::find(const std::string& name,const std::string& version)
 	{

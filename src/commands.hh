@@ -24,6 +24,9 @@
 #ifndef PKMT_COMMANDS
 #define PKMT_COMMANDS
 
+#include "Shell.hh"
+
+
 #include <bdt/header.hh>
 
 
@@ -33,23 +36,29 @@ namespace pkmt
 class Interpret
 {
 private:
-	const bdt::Header* configure;
 	//
 	void pkmt(int argc, char* argv[]);
 	void lfs(int argc, char* argv[]);
 	void writeParamschar (std::string& argout, int argc, char *argv[]);
-	
+
+protected:
+	const bdt::Header* configure;
+	Shell shell;
+
 public:
 	Interpret(const bdt::Header& configure);
 	void execute(int argc, char* argv[]);
 };
 
-class BuilderLFS
+class BuilderLFS : public Interpret
 {
 private:
 
 public:
-	void tmpsys(int argc, char* argv[]);
+	BuilderLFS(const bdt::Header& configure);
+	void tmpsys(int argc, char* argv[]);		
+	int imports(int argc, char* argv[]);
+	int croostoolchain(int argc, char* argv[]);	
 };
 
 

@@ -1,6 +1,6 @@
 
 
-AC_INIT(pkmt, 0.3.7-alpha, azael.devel@gmail.com)
+AC_INIT(pkmt, 0.4.0-alpha, azael.devel@gmail.com)
 
 AC_CONFIG_HEADERS([config.h])
 
@@ -25,6 +25,8 @@ PKG_CHECK_MODULES(LIBCONFIG,libconfig++)
 PKG_CHECK_MODULES(BDT,bdt)
 
 PKG_CHECK_MODULES(CUNIT,cunit)
+
+PKG_CHECK_MODULES(LIBCURL,libcurl)
 
 AC_DEFINE_UNQUOTED([PATHDIR], ["$ac_abs_confdir"],[Define to the read-only architecture-independent data directory.])
 

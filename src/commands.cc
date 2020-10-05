@@ -28,6 +28,8 @@
 #include <iostream>
 #include <libconfig.h++>
 #include <filesystem>
+#include <fstream>
+#include <libgen.h>
 
 
 
@@ -35,11 +37,131 @@
 #include "data.hh"
 #include "config.h"
 
+#include "Shell.hh"
 
 
 namespace pkmt
 {
 
+
+int BuilderLFS::croostoolchain(int argc, char* argv[])
+{
+	std::string web,md5sums;
+	for(int i = 0; i < argc ; i++)
+	{
+		if(strcmp(argv[i],"--web") == 0 and argv[i+1] != NULL)
+		{
+			web = argv[i+1];
+			i++;
+		}		
+		if(strcmp(argv[i],"--md5sums") == 0 and argv[i+1] != NULL)
+		{
+			md5sums = argv[i+1];
+			i++;
+		}
+		if(strcmp(argv[i],"--version") == 0 and argv[i+1] != NULL)
+		{
+			octetos::core::Semver ver;
+			std::cout <<  "Para verison : " << argv[i+1] << "\n";
+			ver.set(argv[i+1]);
+			((bdt::HeaderLFS*)configure)->setVersion(ver);
+			//std::cout <<  "Para verison : " << (const std::string&)((bdt::HeaderLFS*)configure)->getVersion() << "\n";
+			i++;
+		}
+	}
+	std::cout << "Importando archivos '" << web << "'...\n";
+	
+	std::ifstream webfile(web);
+	std::string line;
+	std::string repo = ((bdt::HeaderLFS*)configure)->getREPO_SOURCES();
+	if(!shell.exists(repo))
+	{
+		if(shell.mkdir(repo.c_str(),true) > 0)
+		{
+			std::cerr << "Falló al crear el archivo el archivo '" << repo << "'\n";
+			return 1;
+		}
+		else
+		{
+			//std::cout << "Se creo : " << repo << ".\n";
+		}
+	}
+	std::cout << "Creando repositorio '" << repo << "'...\n";
+	shell.cd(repo);
+	
+	while (std::getline(webfile, line))
+	{
+		std::cout << line << "\n";		
+		//shell.wget(line);
+		//std::cout << "Creando : " << shell.getfilename_url(line) << "\n";
+	}
+
+	if(shell.cp(md5sums,".") != 0)	
+	{
+		std::cerr << "Fallo la copua del archivo " << md5sums << "\n";
+	}
+	else
+	{
+		return 0;
+	}
+}
+
+int BuilderLFS::imports(int argc, char* argv[])
+{
+	std::string web,md5sums;
+	for(int i = 0; i < argc ; i++)
+	{
+		if(strcmp(argv[i],"--web") == 0 and argv[i+1] != NULL)
+		{
+			web = argv[i+1];
+			i++;
+		}		
+		if(strcmp(argv[i],"--md5sums") == 0 and argv[i+1] != NULL)
+		{
+			md5sums = argv[i+1];
+			i++;
+		}	
+	}
+	std::cout << "Importando archivos '" << web << "'...\n";
+	
+	std::ifstream webfile(web);
+	std::string line;
+	std::string repo = ((bdt::HeaderLFS*)configure)->getREPO_SOURCES();
+	if(!shell.exists(repo))
+	{
+		if(shell.mkdir(repo.c_str(),true) > 0)
+		{
+			std::cerr << "Falló al crear el archivo el archivo '" << repo << "'\n";
+			return 1;
+		}
+		else
+		{
+			//std::cout << "Se creo : " << repo << ".\n";
+		}
+	}
+	shell.cd(repo);
+	while (std::getline(webfile, line))
+	{
+		std::cout << line << "\n";		
+		//shell.wget(line);
+		//std::cout << "Creando : " << shell.getfilename_url(line) << "\n";
+	}
+	
+	/*std::list<Shell::pair_md5> md5sum_list;
+	std::ifstream md5file(md5sums);
+	while (std::getline(md5file, line))
+	{
+		//std::cout << line << "\n";	
+		if(!shell.getMD5s(md5sum_list,line))
+		{
+			std::cerr << "Falló con : " << line << "\n";
+			return false;
+		}
+	}*/
+	
+	
+	return 0;
+}
 
 
 void BuilderLFS::tmpsys(int argc, char* argv[])
@@ -113,7 +235,7 @@ void BuilderLFS::tmpsys(int argc, char* argv[])
 			env = new coreutils::Enviroment();
 			env->name = "LFS_SOURCES";
 			#ifdef DEBUG
-			env->value = confglfs.getREPO_ORIGIN_SOURCES();
+			env->value = confglfs.getREPO_SOURCES();
 			#else
 			env->value = confglfs.getLFS() + "/tools/sources";
 			#endif
@@ -175,7 +297,10 @@ void BuilderLFS::tmpsys(int argc, char* argv[])
 
 
 
+BuilderLFS::BuilderLFS(const bdt::Header& configure) : Interpret(configure)
+{
 
+}
 Interpret::Interpret(const bdt::Header& configure)
 {
 	this->configure = &configure;
@@ -191,8 +316,18 @@ void Interpret::lfs(int argc, char* argv[])
 {
 	if(strcmp(argv[0],"tmpsys") == 0)
 	{
-		BuilderLFS buider;
+		BuilderLFS buider(*configure);
 		buider.tmpsys(argc-1,argv+1);
+	}
+	else if(strcmp(argv[0],"imports") == 0)
+	{
+		BuilderLFS buider(*configure);
+		buider.imports(argc-1,argv+1);
+	}
+	else if(strcmp(argv[0],"croos-toolschain") == 0)
+	{
+		BuilderLFS buider(*configure);
+		buider.croostoolchain(argc-1,argv+1);
 	}
 	else
 	{

@@ -9,6 +9,9 @@ AM_CFLAGS =\
 	 -Wall\
 	 -g
 
+bdtdir = $(datadir)/pkmt
+bdt_DATA = md5sums-8.4 wget-list-8.4 md5sums-10.0 wget-list-10.0
+
 bin_PROGRAMS = pkmt
 
 dist_bin_SCRIPTS = pkmt-prephost-build
@@ -18,14 +21,15 @@ lib_LTLIBRARIES = libpkmt.la
 
 pkmt_SOURCES = \
 	main.cc \
-	commands.cc
+	commands.cc \
+	Shell.cc
 
 pkmt_LDFLAGS = 
 
-pkmt_LDADD = $(BDT_LIBS) libpkmt.la
-pkmt_CPPFLAGS = $(BDT_CFLAGS)
+pkmt_LDADD = $(BDT_LIBS) $(OCTETOS_CORE_LIBS) $(OCTETOS_COREUTILS_LIBS) $(LIBCURL_LIBS) libpkmt.la
+pkmt_CPPFLAGS = $(BDT_CFLAGS) $(OCTETOS_CORE_CFLAGS) $(OCTETOS_COREUTILS_CFLAGS)  $(LIBCURL_CFLAGS)
 
 libpkmt_la_SOURCES = data.cc data-collections.cc data-repository.cc data-package.cc
-libpkmt_la_LIBADD = $(BDT_LIBS) $(OCTETOS_CORE_LIBS) $(OCTETOS_COREUTILS_LIBS)
-libpkmt_la_CPPFLAGS = $(BDT_CFLAGS) $(OCTETOS_CORE_CFLAGS) $(OCTETOS_COREUTILS_CFLAGS)
+libpkmt_la_LIBADD = $(BDT_LIBS) $(OCTETOS_CORE_LIBS) $(OCTETOS_COREUTILS_LIBS) $(LIBCURL_LIBS)
+libpkmt_la_CPPFLAGS = $(BDT_CFLAGS) $(OCTETOS_CORE_CFLAGS) $(OCTETOS_COREUTILS_CFLAGS)  $(LIBCURL_CFLAGS)
 libpkmt_la_LDFLAGS = -static

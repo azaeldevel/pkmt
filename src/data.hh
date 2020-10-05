@@ -27,7 +27,10 @@
 #include <map>
 #include <list>
 #include <vector>
-#include <octetos/coreutils/shell.hh>
+
+
+
+#include "Shell.hh"
 
 
 
@@ -266,13 +269,13 @@ public:
 	const Architecture& getArchitecture()const;
 	const Phase& getPhase()const;
 	const Base& getBase()const;
-
-
+	
+	
 	const std::string& operator = (const std::string&);
 	operator const std::string&()const;
 	Package* find(const std::string& name);
 	Package* find(const std::string& name,const std::string& version);
-
+	static Repository* create(const std::string& fn, const std::list<Shell::pair_md5>& md5s);
 };
 
 
