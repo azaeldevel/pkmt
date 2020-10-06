@@ -152,6 +152,7 @@ private:
 	Manager manager;
 	std::map<std::string,Package*> deps;	
 	PassingType passingtype;
+	std::string sources;
 
 	//
 	short levelexe;
@@ -189,7 +190,7 @@ public:
 	bool configure();
 	bool compile();
 	bool pre_install();
-	int install(const std::vector<coreutils::Enviroment*>,coreutils::Shell&);
+	int install(std::vector<coreutils::Enviroment*>&,coreutils::Shell&);
 	bool pos_install();
 	bool build();
 	bool packing();//crea paquete binario
@@ -229,7 +230,7 @@ private:
 	
 	//
 	Repository* repository;
-
+	
 	//funciontions
 	void read();
 public:
@@ -258,11 +259,13 @@ private:
 	//derived
 	std::map<std::string,Collections*> collections;
 	std::string filename;
+	const octetos::core::Semver* version;
+	std::string sources;
 
 	void readData();
 	void readCollentions();
 public:
-	Repository(const std::string&);
+	Repository(const std::string&,const octetos::core::Semver& ver);
 	Repository();
 	~Repository();
 	const std::string& getName()const;
@@ -275,6 +278,8 @@ public:
 	operator const std::string&()const;
 	Package* find(const std::string& name);
 	Package* find(const std::string& name,const std::string& version);
+	const std::string& getSources()const;
+	const octetos::core::Semver& getVersion()const;
 	static Repository* create(const std::string& fn, const std::list<Shell::pair_md5>& md5s);
 };
 

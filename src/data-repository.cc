@@ -31,8 +31,15 @@ namespace pkmt
 {
 
 
-
-
+	
+	const octetos::core::Semver& Repository::getVersion()const
+	{
+		return *version;
+	}
+	const std::string& Repository::getSources()const
+	{
+		return sources;
+	}
 	Repository* Repository::create(const std::string& fn, const std::list<Shell::pair_md5>& md5s)
 	{
 		Shell shell;
@@ -215,9 +222,20 @@ namespace pkmt
 	Repository::Repository()
 	{
 	}
-	Repository::Repository(const std::string& fn)
+	Repository::Repository(const std::string& rd,const octetos::core::Semver& ver)
 	{
-		filename = fn;
+		version = &ver;
+		if(version->getMajor() == 8)
+		{
+			filename = rd + "/packages/lfs/" + version->toString();			
+			sources = rd + "/sources/lfs/" + version->toString();
+		}
+		else if(version->getMajor() == 10 and version->getMinor() == 0)
+		{
+			filename = rd + "/packages/lfs/" + version->toString() + "/cross-toolchain";			
+			sources = rd + "/sources/lfs/" + version->toString();
+		}
+		//std::cout << "filename : " << filename << "\n";
 		readData();
 		readCollentions();
 	}

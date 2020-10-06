@@ -83,8 +83,7 @@ namespace pkmt
 				continue;
 			}
 			
-			
-			//std::cout << "\t\tPaquete : " << file << "\n";
+			//std::cout << "\t\tPaquete : " << filename << "/" << file << "\n";
 			pkg = new Package(*repository,filename + "/" + file,basename((char*)filename.c_str()),file);
 			packages.insert(std::pair<std::string,Package*>(file,pkg));				
 		}

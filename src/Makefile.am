@@ -10,7 +10,7 @@ AM_CFLAGS =\
 	 -g
 
 bdtdir = $(datadir)/pkmt
-bdt_DATA = md5sums-8.4 wget-list-8.4 md5sums-10.0 wget-list-10.0
+bdt_DATA = 
 
 bin_PROGRAMS = pkmt
 

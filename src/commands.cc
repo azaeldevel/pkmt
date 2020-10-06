@@ -46,64 +46,132 @@ namespace pkmt
 
 int BuilderLFS::croostoolchain(int argc, char* argv[])
 {
-	std::string web,md5sums;
-	for(int i = 0; i < argc ; i++)
+	//std::cout << "Step 1 :  BuilderLFS::tmpsys \n";
+	pkmt::Repository* repo;
+	octetos::core::Semver ver;
+	std::string dir;
+	try
 	{
-		if(strcmp(argv[i],"--web") == 0 and argv[i+1] != NULL)
+		if(argc > 1)
 		{
-			web = argv[i+1];
-			i++;
-		}		
-		if(strcmp(argv[i],"--md5sums") == 0 and argv[i+1] != NULL)
-		{
-			md5sums = argv[i+1];
-			i++;
-		}
-		if(strcmp(argv[i],"--version") == 0 and argv[i+1] != NULL)
-		{
-			octetos::core::Semver ver;
-			std::cout <<  "Para verison : " << argv[i+1] << "\n";
-			ver.set(argv[i+1]);
-			((bdt::HeaderLFS*)configure)->setVersion(ver);
-			//std::cout <<  "Para verison : " << (const std::string&)((bdt::HeaderLFS*)configure)->getVersion() << "\n";
-			i++;
-		}
-	}
-	std::cout << "Importando archivos '" << web << "'...\n";
-	
-	std::ifstream webfile(web);
-	std::string line;
-	std::string repo = ((bdt::HeaderLFS*)configure)->getREPO_SOURCES();
-	if(!shell.exists(repo))
-	{
-		if(shell.mkdir(repo.c_str(),true) > 0)
-		{
-			std::cerr << "Falló al crear el archivo el archivo '" << repo << "'\n";
-			return 1;
+			if(strcmp(argv[0],"--version") == 0 and argv[1] != NULL)
+			{
+				ver.set(argv[1]);
+				((bdt::HeaderLFS*)configure)->setVersion(ver);
+			}
+			else
+			{
+				std::cerr << "Especifique los parametros de cross-toolcahin\n";
+			}
 		}
 		else
 		{
-			//std::cout << "Se creo : " << repo << ".\n";
+			std::cerr << "Especifique los parametros de cross-toolcahin\n";
 		}
+		std::string rootrepo = ((bdt::HeaderLFS*)configure)->getRoot_Repository() ;
+		std::cout << "Buscando repositorio de paquetes en :" << rootrepo << " \n";
+		repo = new Repository(rootrepo,ver);
+		
+		
 	}
-	std::cout << "Creando repositorio '" << repo << "'...\n";
-	shell.cd(repo);
-	
-	while (std::getline(webfile, line))
+	catch(const libconfig::FileIOException &fioex)
 	{
-		std::cout << line << "\n";		
-		//shell.wget(line);
-		//std::cout << "Creando : " << shell.getfilename_url(line) << "\n";
+		std::cerr << "\n" << fioex.what() << "\n";
+		return 0;
 	}
+	//std::cout << "Step 2 :  BuilderLFS::tmpsys \n";
+	//std::cout << "\n";
+	//std::cout << "Name repos : " << repo.getName() << "\n";
 
-	if(shell.cp(md5sums,".") != 0)	
+	
+	pkmt::Package* pktmpsys = repo->find("cross-toolchain");
+	if(pktmpsys == NULL)
 	{
-		std::cerr << "Fallo la copua del archivo " << md5sums << "\n";
+		std::cerr << "No se encontro el paquete cross-toolchain\n";
+		return 0;
 	}
 	else
 	{
-		return 0;
+		//std::cout << "Paquete : " << pktmpsys->getName() << " in " << pktmpsys->getFilename() << "\n";
+
+		try
+		{
+			pktmpsys->readDependencies();
+		}
+		catch(pkmt::NotFoundDependencyException e)
+		{
+			std::cerr << "Fallo la lectura de dependencias\n";
+			std::cerr << e.what() << "\n";
+		}
+		catch(std::exception& e)
+		{
+			std::cerr << "Fallo la lectura de dependencias\n";
+			std::cerr << e.what() << "\n";
+			return 0;
+		}
+		
+		char sandbox_template[] = "/tmp/sandbox-XXXXXX";
+        char *sandbox_name = mkdtemp(sandbox_template);
+        //std::cout << "sandbox=" << sandbox_name << "\n";
+		std::list<Package*> stack;
+		pktmpsys->createStackDeps(stack);
+		coreutils::Enviroment* env;
+		bdt::HeaderLFS confglfs;
+		std::vector<coreutils::Enviroment*>* venv;
+		coreutils::Shell shell;
+		
+		
+		for(Package* pk : stack)
+		{
+			shell.cd(sandbox_name);
+			std::vector<coreutils::Enviroment*> venv;			
+			env = new coreutils::Enviroment();
+			env->name = "LFS_TGT";
+			env->value = confglfs.getLFS_TGT();
+			venv.push_back(env);
+			env = new coreutils::Enviroment();
+			env->name = "LFS";
+			env->value = confglfs.getLFS();
+			venv.push_back(env);
+			env = new coreutils::Enviroment();
+			env->name = "PKNAME";
+			env->value = pk->getName();
+			venv.push_back(env);
+			env = new coreutils::Enviroment();
+			env->name = "PKVER";
+			env->value = pk->getVersion();
+			venv.push_back(env);
+			env = new coreutils::Enviroment();
+			env->name = "SANDBOX";
+			env->value = sandbox_name;
+			std::cout <<">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n";
+			std::cout <<">> Installing package : " << pk->getName() << "\n";
+			std::cout <<">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n";
+			int st = pk->install(venv,shell);
+			if(st == 130)
+			{
+				std::cerr << "\n\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n";
+				std::cerr << ">> Manulmente terminado (ctrl + c)\n";
+				std::cerr << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n";
+				return 0;
+			}
+			else if(st > 0)
+			{
+				
+				std::cerr << "\n\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n";
+				std::cerr << ">> Eror detectado ..\n";
+				std::cerr << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n";
+				return 0;
+			}
+			for(coreutils::Enviroment* env : venv)
+			{
+				delete env;
+			}
+			
+		}
 	}
+	
+	return 0;
 }
 
 int BuilderLFS::imports(int argc, char* argv[])

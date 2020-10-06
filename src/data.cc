@@ -74,7 +74,7 @@ namespace pkmt
 	{
 		return describe.c_str();
 	}
-	 
+	
 	 
 	
 	const char* DataException::what() const throw()

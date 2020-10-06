@@ -16,6 +16,9 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <errno.h>
+#include <fstream>
+#include <iostream>
+#include <libgen.h>
 
 #include <vector>
 
@@ -29,70 +32,29 @@ namespace pkmt
 
 int Shell::cp(const std::string& from,const std::string& to)
 {
-	int fd_to, fd_from;
-    char buf[4096];
-    ssize_t nread;
-    int saved_errno;
-
-    fd_from = open(from.c_str(), O_RDONLY);
-    if (fd_from < 0)
-        return -1;
-
- 	std::string strto;
-	if(strcmp(to.c_str(),".") == 0)
+	std::string tostr=to;
+	std::ifstream in(from);
+	if(to.compare(".") == 0)
 	{
-		strto = basename((char*)from.c_str());
+		std::cout << "Basename : " << from << "\n";
+		tostr = basename((char*)from.c_str());
 	}
 	else
 	{
-		strto = to;
+		tostr = to;
 	}
-    fd_to = open(strto.c_str(), O_WRONLY | O_CREAT | O_EXCL, 0666);
-    if (fd_to < 0)
-        goto out_error;
-
-    while (nread = read(fd_from, buf, sizeof buf), nread > 0)
-    {
-        char *out_ptr = buf;
-        ssize_t nwritten;
-
-        do {
-            nwritten = write(fd_to, buf, nread);
-
-            if (nwritten >= 0)
-            {
-                nread -= nwritten;
-                out_ptr += nwritten;
-            }
-            else if (errno != EINTR)
-            {
-                goto out_error;
-            }
-        } while (nread > 0);
-    }
-
-    if (nread == 0)
-    {
-        if (close(fd_to) < 0)
-        {
-            fd_to = -1;
-            goto out_error;
-        }
-        close(fd_from);
-
-        /* Success! */
-        return 0;
-    }
-
-  out_error:
-    saved_errno = errno;
-
-    close(fd_from);
-    if (fd_to >= 0)
-        close(fd_to);
-
-    errno = saved_errno;
-    return -1;    
+	std::ofstream out(tostr);
+	
+	std::string line;
+	while (std::getline(in, line))
+	{
+		out << line << "\n";
+	}
+	
+	in.close();
+	out.close();
+	
+	return 0;
 }
 bool Shell::getMD5s(std::list<pair_md5>& v,const std::string& l)
 {
@@ -168,10 +130,21 @@ size_t Shell::write_data(void *ptr, size_t size, size_t nmemb, void *stream)
   size_t written = fwrite(ptr, size, nmemb, (FILE *)stream);
   return written;
 }
-int Shell::wget(const std::string& url,const std::string& in)
+int Shell::wget(const std::string& url,const std::string& in,std::ostream& out)
 {
 	CURL *curl_handle;
-	static std::string fullpath = in + "/" + getfilename_url(url);
+	out << "\nDescargando '" << url << "'";
+	static std::string fullpath;
+	
+	if(in.compare(".") == 0)
+	{
+		fullpath = in + "/" + getfilename_url(url);
+	}
+	else
+	{
+		fullpath = getfilename_url(url);
+	}
+	
   	FILE *pagefile;
 	
   	curl_global_init(CURL_GLOBAL_ALL);
@@ -206,6 +179,8 @@ int Shell::wget(const std::string& url,const std::string& in)
 		
 		return 1;
   	}
+  	
+  	out << " hecho.\n";
  
   	/* cleanup curl stuff */ 
   	curl_easy_cleanup(curl_handle);
