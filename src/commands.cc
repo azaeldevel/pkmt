@@ -301,7 +301,7 @@ void BuilderLFS::tmpsys(int argc, char* argv[])
 			
 			coreutils::Enviroment* env = new coreutils::Enviroment();
 			env->name = "LFS_SOURCES";
-			env->value = confglfs.getLFS() + "/tools/tmpsys";
+			env->value = confglfs.getLFS() + "/tools/sources";
 			venv.push_back(env);
 			env = new coreutils::Enviroment();
 			env->name = "LFS_TGT";

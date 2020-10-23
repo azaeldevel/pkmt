@@ -1,6 +1,6 @@
 
 
-AC_INIT(pkmt, 0.5.1-alpha, azael.devel@gmail.com)
+AC_INIT(pkmt, 0.5.2-alpha, azael.devel@gmail.com)
 
 AC_CONFIG_HEADERS([config.h])
 
