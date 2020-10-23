@@ -1,6 +1,6 @@
 
 
-AC_INIT(pkmt, 0.5.0-alpha, azael.devel@gmail.com)
+AC_INIT(pkmt, 0.5.1-alpha, azael.devel@gmail.com)
 
 AC_CONFIG_HEADERS([config.h])
 
@@ -20,7 +20,10 @@ PKG_CHECK_MODULES(OCTETOS_CORE,octetos-core)
 
 PKG_CHECK_MODULES(OCTETOS_COREUTILS,octetos-coreutils)
 
+
 PKG_CHECK_MODULES(LIBCONFIG,libconfig++)
+
+
 
 PKG_CHECK_MODULES(BDT,bdt)
 

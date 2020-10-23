@@ -70,9 +70,7 @@ int BuilderLFS::croostoolchain(int argc, char* argv[])
 		}
 		std::string rootrepo = ((bdt::HeaderLFS*)configure)->getRoot_Repository() ;
 		std::cout << "Buscando repositorio de paquetes en :" << rootrepo << " \n";
-		repo = new Repository(rootrepo,ver);
-		
-		
+		repo = new Repository(rootrepo,ver);	
 	}
 	catch(const libconfig::FileIOException &fioex)
 	{
@@ -246,7 +244,7 @@ void BuilderLFS::tmpsys(int argc, char* argv[])
 		bdt::HeaderLFS confglfs;
 		dir = confglfs.getLFS() + "/tools/tmpsys";
 		#endif
-		std::cout << "Buscando repositorio de paquetes en :" << dir << " \n";
+		std::cout << "Buscando repositorio de paquetes en : " << dir << " \n";
 		repo = dir;
 	}
 	catch(const libconfig::FileIOException &fioex)
@@ -300,13 +298,10 @@ void BuilderLFS::tmpsys(int argc, char* argv[])
 		{
 			shell.cd(sandbox_name);
 			std::vector<coreutils::Enviroment*> venv;
-			env = new coreutils::Enviroment();
+			
+			coreutils::Enviroment* env = new coreutils::Enviroment();
 			env->name = "LFS_SOURCES";
-			#ifdef DEBUG
-			env->value = confglfs.getREPO_SOURCES();
-			#else
-			env->value = confglfs.getLFS() + "/tools/sources";
-			#endif
+			env->value = confglfs.getLFS() + "/tools/tmpsys";
 			venv.push_back(env);
 			env = new coreutils::Enviroment();
 			env->name = "LFS_TGT";
@@ -392,7 +387,7 @@ void Interpret::lfs(int argc, char* argv[])
 		BuilderLFS buider(*configure);
 		buider.imports(argc-1,argv+1);
 	}
-	else if(strcmp(argv[0],"croos-toolschain") == 0)
+	else if(strcmp(argv[0],"cross-toolschain") == 0)
 	{
 		BuilderLFS buider(*configure);
 		buider.croostoolchain(argc-1,argv+1);

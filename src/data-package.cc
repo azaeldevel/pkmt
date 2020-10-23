@@ -76,19 +76,9 @@ namespace pkmt
 		{
 			std::string script = filename + "/" + (const std::string&)base;	
 			//std::cout << "Instalando '" << filename << "'\n";
-			s.set(v);
+			//s.set(v);
 			
-			coreutils::Enviroment* env = new coreutils::Enviroment();
-			env->name = "LFS_SOURCES";			
-			if(repository->getVersion().getMajor() == 8)
-			{
-				env->value = repository->getSources() ;
-			}
-			else if(repository->getVersion().getMajor() == 10)
-			{			
-				env->value = repository->getSources() ;
-			}
-			v.push_back(env);
+			
 			s.set(v);
 			
 			return s.execute(script);
