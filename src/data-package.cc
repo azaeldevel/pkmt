@@ -138,9 +138,7 @@ namespace pkmt
 		if(this->version.compare(version) != 0)
 		{
 			throw InvalidDataValueException(filename,InvalidDataValueException::VERSION_AMBIGUOUS,*this,name);
-		}
-		
-		
+		}		
 	}
 	bool Package::fileExists(const std::string& fn)
 	{
