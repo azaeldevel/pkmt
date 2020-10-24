@@ -70,17 +70,11 @@ namespace pkmt
 	
 	
 	
-	int Package::install(std::vector<coreutils::Enviroment*>& v,coreutils::Shell& s)
+	int Package::install(coreutils::Shell& s)
 	{
 		if(levelexe == 1)
 		{
-			std::string script = filename + "/" + (const std::string&)base;	
-			//std::cout << "Instalando '" << filename << "'\n";
-			//s.set(v);
-			
-			
-			s.set(v);
-			
+			std::string script = filename + "/" + (const std::string&)base;				
 			return s.execute(script);
 		}
 		

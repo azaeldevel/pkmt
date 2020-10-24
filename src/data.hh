@@ -190,7 +190,7 @@ public:
 	bool configure();
 	bool compile();
 	bool pre_install();
-	int install(std::vector<coreutils::Enviroment*>&,coreutils::Shell&);
+	int install(coreutils::Shell&);
 	bool pos_install();
 	bool build();
 	bool packing();//crea paquete binario

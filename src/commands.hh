@@ -59,6 +59,7 @@ public:
 	void tmpsys(int argc, char* argv[]);		
 	int imports(int argc, char* argv[]);
 	int croostoolchain(int argc, char* argv[]);	
+	void package(int argc, char* argv[]);
 };
 
 

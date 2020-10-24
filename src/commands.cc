@@ -36,6 +36,7 @@
 #include "commands.hh"
 #include "data.hh"
 #include "config.h"
+#include <octetos/core/Version.hh>
 
 #include "Shell.hh"
 
@@ -145,7 +146,7 @@ int BuilderLFS::croostoolchain(int argc, char* argv[])
 			std::cout <<">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n";
 			std::cout <<">> Installing package : " << pk->getName() << "\n";
 			std::cout <<">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n";
-			int st = pk->install(venv,shell);
+			int st = pk->install(shell);
 			if(st == 130)
 			{
 				std::cerr << "\n\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n";
@@ -230,22 +231,37 @@ int BuilderLFS::imports(int argc, char* argv[])
 }
 
 
-void BuilderLFS::tmpsys(int argc, char* argv[])
+void BuilderLFS::package(int argc, char* argv[])
 {
 	//std::cout << "Step 1 :  BuilderLFS::tmpsys \n";
 	pkmt::Repository repo;
-	std::string dir;
+	std::string dir, packageName,sourcesDir,packagesDir;
+	octetos::core::Semver ver;
+
+	for(int i = 0; i < argc; i++)
+	{
+		if(strcmp(argv[i],"--version") == 0 and argv[i+1] != NULL and i+1 <= argc)
+		{
+			ver.set(argv[i+1]);
+			i++;
+		}
+		else
+		{
+			packageName = argv[i];
+		}		
+	}
+	#ifdef DEBUG
+	sourcesDir = configure->getRoot_Repository() + "/sources/lfs/" + ver.toString();
+	packagesDir = configure->getRoot_Repository() + "/packages/lfs/" + ver.toString();
+	#else
+	sourcesDir = configure->getLFS() + "/tools/sources";
+	packagesDir = configure->getLFS() + "/tools/tmpsys";
+	#endif
 	try
 	{
-		#ifdef DEBUG
-		dir = PATHDIR;
-		dir += "/src/tmpsys";
-		#else
-		bdt::HeaderLFS confglfs;
-		dir = confglfs.getLFS() + "/tools/tmpsys";
-		#endif
-		std::cout << "Buscando repositorio de paquetes en : " << dir << " \n";
-		repo = dir;
+		
+		std::cout << "Buscando repositorio de paquetes en : " << packagesDir << " \n";
+		repo = packagesDir;
 	}
 	catch(const libconfig::FileIOException &fioex)
 	{
@@ -257,10 +273,10 @@ void BuilderLFS::tmpsys(int argc, char* argv[])
 	//std::cout << "Name repos : " << repo.getName() << "\n";
 
 	
-	pkmt::Package* pktmpsys = repo.find("tmpsys");
+	pkmt::Package* pktmpsys = repo.find(packageName);
 	if(pktmpsys == NULL)
 	{
-		std::cerr << "No se encontro el paquete tmpsys\n";
+		std::cerr << "No se encontro el paquete " << packageName << "\n";
 		return;
 	}
 	else
@@ -289,7 +305,7 @@ void BuilderLFS::tmpsys(int argc, char* argv[])
 		std::list<Package*> stack;
 		pktmpsys->createStackDeps(stack);
 		coreutils::Enviroment* env;
-		bdt::HeaderLFS confglfs;
+		//bdt::HeaderLFS confglfs;
 		std::vector<coreutils::Enviroment*>* venv;
 		coreutils::Shell shell;
 		
@@ -301,15 +317,15 @@ void BuilderLFS::tmpsys(int argc, char* argv[])
 			
 			coreutils::Enviroment* env = new coreutils::Enviroment();
 			env->name = "LFS_SOURCES";
-			env->value = confglfs.getLFS() + "/tools/sources";
+			env->value = sourcesDir;
 			venv.push_back(env);
 			env = new coreutils::Enviroment();
 			env->name = "LFS_TGT";
-			env->value = confglfs.getLFS_TGT();
+			env->value = ((bdt::HeaderLFS*)configure)->getLFS_TGT();
 			venv.push_back(env);
 			env = new coreutils::Enviroment();
 			env->name = "LFS";
-			env->value = confglfs.getLFS();
+			env->value = ((bdt::HeaderLFS*)configure)->getLFS();
 			venv.push_back(env);
 			env = new coreutils::Enviroment();
 			env->name = "PKNAME";
@@ -326,7 +342,7 @@ void BuilderLFS::tmpsys(int argc, char* argv[])
 			std::cout <<">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n";
 			std::cout <<">> Installing package : " << pk->getName() << "\n";
 			std::cout <<">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n";
-			int st = pk->install(venv,shell);
+			int st = pk->install(shell);
 			if(st == 130)
 			{
 				std::cerr << "\n\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n";
@@ -338,15 +354,15 @@ void BuilderLFS::tmpsys(int argc, char* argv[])
 			{
 				
 				std::cerr << "\n\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n";
-				std::cerr << ">> Eror detectado ..\n";
+				std::cerr << ">> Error detectado ..\n";
 				std::cerr << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n";
 				return;
 			}
 			for(coreutils::Enviroment* env : venv)
 			{
 				delete env;
-			}
-			
+			}	
+			venv.clear();	
 		}
 	}
 }
@@ -377,12 +393,8 @@ void Interpret::writeParamschar (std::string& argout, int argc, char *argv[])
 }
 void Interpret::lfs(int argc, char* argv[])
 {
-	if(strcmp(argv[0],"tmpsys") == 0)
-	{
-		BuilderLFS buider(*configure);
-		buider.tmpsys(argc-1,argv+1);
-	}
-	else if(strcmp(argv[0],"imports") == 0)
+	
+	/*else if(strcmp(argv[0],"imports") == 0)
 	{
 		BuilderLFS buider(*configure);
 		buider.imports(argc-1,argv+1);
@@ -391,13 +403,11 @@ void Interpret::lfs(int argc, char* argv[])
 	{
 		BuilderLFS buider(*configure);
 		buider.croostoolchain(argc-1,argv+1);
-	}
-	else
-	{
-		std::string msg = "En prephost, ";
-		msg = msg + "'" + argv[0] + "' commando desconocida.";
-		throw msg;
-	}
+	}*/
+	
+	
+	BuilderLFS buider(*configure);
+	buider.package(argc,argv);	
 }
 void Interpret::execute(int argc, char* argv[])
 {
