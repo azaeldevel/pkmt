@@ -190,7 +190,7 @@ public:
 	bool configure();
 	bool compile();
 	bool pre_install();
-	int install(coreutils::Shell&);
+	int install(Shell&);
 	bool pos_install();
 	bool build();
 	bool packing();//crea paquete binario
@@ -284,9 +284,15 @@ public:
 };
 
 
-class Builder
+class Database
 {
-
+private:
+	std::string db;
+public:
+	Database();
+	bool install(const std::string&,Shell& shell);
+	bool is(const std::string&,Shell& shell);
+	const std::string& getDB() const;
 };
 
 }

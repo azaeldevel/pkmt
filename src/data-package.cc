@@ -70,12 +70,19 @@ namespace pkmt
 	
 	
 	
-	int Package::install(coreutils::Shell& s)
+	int Package::install(Shell& s)
 	{
 		if(levelexe == 1)
 		{
-			std::string script = filename + "/" + (const std::string&)base;				
-			return s.execute(script);
+			std::string script = filename + "/" + (const std::string&)base;	
+			int ret = s.execute(script);
+			bool ret2;
+			if(ret == 0)
+			{
+				Database db;
+				ret2 = db.install(name,s);//TODO:Que pasa si falla el registro en BD
+			}
+			return ret;
 		}
 		
 		return -1;

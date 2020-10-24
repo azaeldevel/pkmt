@@ -23,12 +23,47 @@
 
 #include <libconfig.h++>
 #include <iostream>
+#include <bdt/header.hh>
+
+
 
 #include "data.hh"
-
+#include "Shell.hh"
 
 namespace pkmt
 {
+	const std::string& Database::getDB() const
+	{
+		return db;
+	}
+	Database::Database()
+	{
+		bdt::HeaderLFS conf;
+		db = conf.getLFS() + "/etc/pkmt";	
+	}
+	bool Database::install(const std::string& pk,Shell& shell)
+	{
+		if(!shell.exists(db))
+		{
+			shell.mkdir(db,true);
+		}
+		
+		shell.touch(db+"/"+pk);
+		
+		return true;
+	}
+	
+	bool Database::is(const std::string& pk,Shell& shell)
+	{
+		if(shell.exists(db+"/"+pk))
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
 
 
 	

@@ -30,14 +30,13 @@
 #include <filesystem>
 #include <fstream>
 #include <libgen.h>
+#include <octetos/core/Version.hh>
 
 
 
 #include "commands.hh"
 #include "data.hh"
 #include "config.h"
-#include <octetos/core/Version.hh>
-
 #include "Shell.hh"
 
 
@@ -117,7 +116,7 @@ int BuilderLFS::croostoolchain(int argc, char* argv[])
 		coreutils::Enviroment* env;
 		bdt::HeaderLFS confglfs;
 		std::vector<coreutils::Enviroment*>* venv;
-		coreutils::Shell shell;
+		Shell shell;
 		
 		
 		for(Package* pk : stack)
@@ -307,7 +306,7 @@ void BuilderLFS::package(int argc, char* argv[])
 		coreutils::Enviroment* env;
 		//bdt::HeaderLFS confglfs;
 		std::vector<coreutils::Enviroment*>* venv;
-		coreutils::Shell shell;
+		Shell shell;
 		
 		
 		for(Package* pk : stack)
@@ -361,7 +360,7 @@ void BuilderLFS::package(int argc, char* argv[])
 			for(coreutils::Enviroment* env : venv)
 			{
 				delete env;
-			}	
+			}
 			venv.clear();	
 		}
 	}
