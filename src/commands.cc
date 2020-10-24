@@ -31,7 +31,7 @@
 #include <fstream>
 #include <libgen.h>
 #include <octetos/core/Version.hh>
-
+#include <algorithm>
 
 
 #include "commands.hh"
@@ -307,10 +307,19 @@ void BuilderLFS::package(int argc, char* argv[])
 		//bdt::HeaderLFS confglfs;
 		std::vector<coreutils::Enviroment*>* venv;
 		Shell shell;
-		
+		std::list<std::string> installed;
+		Database db;
+		shell.cd(db.getDB());
+		shell.ls(installed);
+		std::list<std::string>::iterator it;
 		
 		for(Package* pk : stack)
 		{
+			it = std::find(installed.begin(),installed.end(),pk->getName());
+			if(it == installed.end())//si ya esta instalado
+			{
+				continue;//salata hacia el siguiente paquete
+			}
 			shell.cd(sandbox_name);
 			std::vector<coreutils::Enviroment*> venv;
 			
