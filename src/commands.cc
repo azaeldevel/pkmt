@@ -253,8 +253,8 @@ void BuilderLFS::package(int argc, char* argv[])
 	sourcesDir = configure->getRoot_Repository() + "/sources/lfs/" + ver.toString();
 	packagesDir = configure->getRoot_Repository() + "/packages/lfs/" + ver.toString();
 	#else
-	sourcesDir = configure->getLFS() + "/tools/sources";
-	packagesDir = configure->getLFS() + "/tools/tmpsys";
+	sourcesDir = ((bdt::HeaderLFS*)configure)->getLFS() + "/tools/sources";
+	packagesDir = ((bdt::HeaderLFS*)configure)->getLFS() + "/tools/tmpsys";
 	#endif
 	try
 	{
