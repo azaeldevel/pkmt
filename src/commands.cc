@@ -341,6 +341,7 @@ void BuilderLFS::package(int argc, char* argv[])
 			std::cout <<">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n";
 			std::cout <<">> Installing package : " << pk->getName() << "\n";
 			std::cout <<">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n";
+			shell.set(venv);
 			int st = pk->install(shell);
 			if(st == 130)
 			{
