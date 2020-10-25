@@ -32,14 +32,19 @@
 
 namespace pkmt
 {
+	const std::string& Database::sufix(const std::string& str)
+	{		
+		HeaderLFS conf;//TODO:eliminar referencia hacia LFS
+		db = conf.getRootDir() + "/etc/pkmt/" + str;
+		
+		return str;
+	}
 	const std::string& Database::getDB() const
 	{
 		return db;
 	}
 	Database::Database()
-	{
-		HeaderLFS conf;
-		db = conf.getRootDir() + "/etc/pkmt";	
+	{	
 	}
 	int Database::record(const std::string& pk,Shell& shell)
 	{

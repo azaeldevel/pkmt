@@ -65,6 +65,21 @@ public:
 };
 
 /**
+*\brief Almacena la informacion de los paquetes instalados
+*
+*/
+class Database
+{
+private:
+	std::string db;
+public:
+	Database();
+	int record(const std::string&,Shell& shell);
+	bool is(const std::string&,Shell& shell);
+	const std::string& getDB() const;
+	const std::string& sufix(const std::string&);
+};
+/**
 *\brief enviroment,parameter
 */
 class PassingType
@@ -154,11 +169,9 @@ private:
 	PassingType passingtype;
 	std::string sources;
 
-	//
+	//derived
 	short levelexe;
 	Repository* repository;
-
-	//derived
 	std::string filename;
 
 
@@ -262,6 +275,7 @@ private:
 	std::string filename;
 	const octetos::core::Semver* version;
 	std::string sources;
+	Database db;
 
 	void readData();
 	void readCollentions();
@@ -282,19 +296,10 @@ public:
 	const std::string& getSources()const;
 	const octetos::core::Semver& getVersion()const;
 	static Repository* create(const std::string& fn, const std::list<Shell::pair_md5>& md5s);
+	Database& getDatabase();
 };
 
 
-class Database
-{
-private:
-	std::string db;
-public:
-	Database();
-	int record(const std::string&,Shell& shell);
-	bool is(const std::string&,Shell& shell);
-	const std::string& getDB() const;
-};
 
 }
 

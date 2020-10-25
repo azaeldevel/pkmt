@@ -23,6 +23,7 @@
 
 #include <octetos/coreutils/shell.hh>
 #include <iostream>
+#include <libgen.h>
 
 #include "data.hh"
 
@@ -31,7 +32,10 @@ namespace pkmt
 {
 
 
-	
+	Database& Repository::getDatabase()
+	{
+		return db;
+	}
 	const octetos::core::Semver& Repository::getVersion()const
 	{
 		return *version;
@@ -102,6 +106,7 @@ namespace pkmt
 		filename = str;
 		readData();
 		readCollentions();
+		db.sufix(basename((char*)filename.c_str()));
 		
 		return str;
 	}
@@ -210,12 +215,12 @@ namespace pkmt
 	Repository::Repository()
 	{
 	}
-	Repository::Repository(const std::string& rd,const octetos::core::Semver& ver)
+	/*Repository::Repository(const std::string& rd,const octetos::core::Semver& ver)
 	{
 		version = &ver;
 		if(version->getMajor() == 8)
 		{
-			filename = rd + "/packages/lfs/" + version->toString();			
+			filename = rd + "/packages/lfs/" + version->toString() + "/tmpsys";			
 			sources = rd + "/sources/lfs/" + version->toString();
 		}
 		else if(version->getMajor() == 10 and version->getMinor() == 0)
@@ -226,7 +231,7 @@ namespace pkmt
 		//std::cout << "filename : " << filename << "\n";
 		readData();
 		readCollentions();
-	}
+	}*/
 	Repository::~Repository()
 	{
 		for(std::pair<std::string,Collections*> coll : collections)

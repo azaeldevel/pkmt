@@ -93,9 +93,8 @@ namespace pkmt
 			int ret = s.execute(script);
 			bool ret2;
 			if(ret == 0)
-			{
-				Database db;
-				ret2 = db.record(name,s);
+			{				
+				ret2 = repository->getDatabase().record(name,s);
 				if(ret2 != 0) return ret2;
 				return 0;
 			}
