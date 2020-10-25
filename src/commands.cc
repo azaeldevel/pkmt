@@ -44,6 +44,7 @@ namespace pkmt
 
 void Interpret::basic(int argc, char* argv[])
 {
+	std::string packageName;
 	for(int i = 0; i < argc; i++)
 	{
 		if(strcmp(argv[i],"--version") == 0 and argv[i+1] != NULL and i+1 <= argc)
@@ -74,13 +75,22 @@ void Interpret::basic(int argc, char* argv[])
 		std::cerr << "\n" << fioex.what() << "\n";
 		return;
 	}
-	
-	if(packageName.empty())	package("basic");
-	else package(packageName);
+		
+	if(!packageName.empty()) 
+	{
+		std::cout << "Pakage name : " << packageName << "\n";
+		package(packageName);
+	}
+	else
+	{
+		std::cout << "Pakage name : basic\n";
+		package("basic");
+	}
 }
 
 void Interpret::tmpsys(int argc, char* argv[])
 {
+	std::string packageName;
 	//std::cout << "Step 1 :  BuilderLFS::tmpsys \n";	
 	for(int i = 0; i < argc; i++)
 	{
@@ -114,20 +124,28 @@ void Interpret::tmpsys(int argc, char* argv[])
 	}
 	
 	
-	if(packageName.empty())	package("tmpsys");
-	else package(packageName);
+	if(!packageName.empty()) 
+	{
+		std::cout << "Pakage name : " << packageName << "\n";
+		package(packageName);
+	}
+	else
+	{
+		std::cout << "Pakage name : tmpsys\n";
+		package("tmpsys");
+	}
 }
 
 void Interpret::package(const std::string& pk)
 {	
-	//std::cout << "Step 1 :  Interpret::package \n";
+	std::cout << "Step 1 :  Interpret::package \n";
 	//std::cout << "\n";
 	//std::cout << "Name repos : " << repo.getName() << "\n";
 	
 	pkmt::Package* pktmpsys = repo.find(pk);
 	if(pktmpsys == NULL)
 	{
-		std::cerr << "No se encontro el paquete " << packageName << "\n";
+		std::cerr << "No se encontro el paquete " << pk << "\n";
 		return;
 	}
 	else
@@ -155,6 +173,7 @@ void Interpret::package(const std::string& pk)
         //std::cout << "sandbox=" << sandbox_name << "\n";
 		std::list<Package*> stack;
 		pktmpsys->createStackDeps(stack);
+		stack.push_back(pktmpsys);//TODO:createStackDeps no agrega el paqueque de inicio.
 		coreutils::Enviroment* env;
 		//bdt::HeaderLFS confglfs;
 		//std::vector<coreutils::Enviroment*>* venv;
@@ -169,7 +188,7 @@ void Interpret::package(const std::string& pk)
 			it = std::find(installed.begin(),installed.end(),pk->getName());
 			if(it != installed.end())//si ya esta instalado
 			{
-				//std::cout << pk->getName() << " ya esta instalado.\n";
+				std::cout << pk->getName() << " ya esta instalado.\n";
 				continue;//salata hacia el siguiente paquete
 			}
 			shell.cd(sandbox_name);

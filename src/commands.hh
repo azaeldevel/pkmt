@@ -39,7 +39,7 @@ private:
 	void lfs(int argc, char* argv[]);
 	void writeParamschar (std::string& argout, int argc, char *argv[]);
 	Repository repo;
-	std::string dir, packageName,sourcesDir,packagesDir;
+	std::string dir,sourcesDir,packagesDir;
 	octetos::core::Semver version;
 
 protected:
