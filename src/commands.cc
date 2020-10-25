@@ -60,8 +60,8 @@ void Interpret::basic(int argc, char* argv[])
 	sourcesDir = configure->getRoot_Repository() + "/sources/lfs/" + version.toString();
 	packagesDir = configure->getRoot_Repository() + "/packages/lfs/" + version.toString() + "/basic";
 	#else
-	sourcesDir = configure->getRootDir()->getLFS() + "/tools/sources";
-	packagesDir = configure->getRootDir()->getLFS() + "/tools/tmpsys";
+	sourcesDir = configure->getRootDir() + "/tools/sources";
+	packagesDir = configure->getRootDir() + "/tools/tmpsys";
 	#endif
 	try
 	{
