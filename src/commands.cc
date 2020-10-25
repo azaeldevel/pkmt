@@ -75,7 +75,8 @@ void Interpret::basic(int argc, char* argv[])
 		return;
 	}
 	
-	package("basic");
+	if(packageName.empty())	package("basic");
+	else package(packageName);
 }
 
 void Interpret::tmpsys(int argc, char* argv[])
@@ -112,7 +113,9 @@ void Interpret::tmpsys(int argc, char* argv[])
 		return;
 	}
 	
-	package("tmpsys");
+	
+	if(packageName.empty())	package("tmpsys");
+	else package(packageName);
 }
 
 void Interpret::package(const std::string& pk)
