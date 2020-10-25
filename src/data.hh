@@ -168,6 +168,7 @@ private:
 	std::map<std::string,Package*> deps;	
 	PassingType passingtype;
 	std::string sources;
+	bool virtualpk;
 
 	//derived
 	short levelexe;

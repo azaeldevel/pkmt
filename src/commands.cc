@@ -78,12 +78,12 @@ void Interpret::basic(int argc, char* argv[])
 		
 	if(!packageName.empty()) 
 	{
-		std::cout << "Pakage name : " << packageName << "\n";
+		//std::cout << "Pakage name : " << packageName << "\n";
 		package(packageName);
 	}
 	else
 	{
-		std::cout << "Pakage name : basic\n";
+		//std::cout << "Pakage name : basic\n";
 		package("basic");
 	}
 }
@@ -126,19 +126,19 @@ void Interpret::tmpsys(int argc, char* argv[])
 	
 	if(!packageName.empty()) 
 	{
-		std::cout << "Pakage name : " << packageName << "\n";
+		//std::cout << "Pakage name : " << packageName << "\n";
 		package(packageName);
 	}
 	else
 	{
-		std::cout << "Pakage name : tmpsys\n";
+		//std::cout << "Pakage name : tmpsys\n";
 		package("tmpsys");
 	}
 }
 
 void Interpret::package(const std::string& pk)
 {	
-	std::cout << "Step 1 :  Interpret::package \n";
+	//std::cout << "Step 1 :  Interpret::package \n";
 	//std::cout << "\n";
 	//std::cout << "Name repos : " << repo.getName() << "\n";
 	
@@ -178,7 +178,6 @@ void Interpret::package(const std::string& pk)
 		//bdt::HeaderLFS confglfs;
 		//std::vector<coreutils::Enviroment*>* venv;
 		std::list<std::string> installed;
-		Database db;
 		shell.cd(db.getDB());
 		shell.ls(installed);
 		std::list<std::string>::iterator it;
@@ -222,6 +221,7 @@ void Interpret::package(const std::string& pk)
 			std::cout <<">> Installing package : " << pk->getName() << "\n";
 			std::cout <<">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n";
 			shell.set(venv);
+			shell.cd(sandbox_name);
 			int st = pk->build(shell);
 			if(st == 130)
 			{

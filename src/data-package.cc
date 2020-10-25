@@ -87,6 +87,9 @@ namespace pkmt
 	*/
 	int Package::build(Shell& s)
 	{
+		//si es unpaquete virtual no nada que hacer en la construcicion
+		if(virtualpk) return 0;
+		
 		if(levelexe == 1)
 		{
 			std::string script = filename + "/" + (const std::string&)base;	
@@ -361,6 +364,14 @@ namespace pkmt
 			throw NotFoundDataException("manager",filename);
 		}
 		
+		try
+		{
+			virtualpk = (const std::string&)cfg.lookup("virtual");
+		}
+		catch(const libconfig::SettingNotFoundException &nfex)
+		{
+			virtualpk=false;
+		}
 
 		
 		//optional values
