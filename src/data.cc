@@ -23,12 +23,13 @@
 
 #include <libconfig.h++>
 #include <iostream>
-#include <bdt/header.hh>
 
 
 
 #include "data.hh"
 #include "Shell.hh"
+#include "header.hh"
+
 
 namespace pkmt
 {
@@ -38,7 +39,7 @@ namespace pkmt
 	}
 	Database::Database()
 	{
-		bdt::HeaderLFS conf;
+		HeaderLFS conf;
 		db = conf.getLFS() + "/etc/pkmt";	
 	}
 	int Database::install(const std::string& pk,Shell& shell)

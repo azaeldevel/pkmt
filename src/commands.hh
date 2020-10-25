@@ -26,9 +26,7 @@
 
 #include "Shell.hh"
 #include "data.hh"
-
-#include <bdt/header.hh>
-
+#include "header.hh"
 
 namespace pkmt
 {
@@ -45,11 +43,11 @@ private:
 	octetos::core::Semver version;
 
 protected:
-	const bdt::Header* configure;
+	const Header* configure;
 	Shell shell;
 
 public:
-	Interpret(const bdt::Header& configure);
+	Interpret(const Header& configure);
 	void execute(int argc, char* argv[]);
 	void tmpsys(int argc, char* argv[]);
 	void basic(int argc, char* argv[]);

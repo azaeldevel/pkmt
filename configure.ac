@@ -1,6 +1,6 @@
 
 
-AC_INIT(pkmt, 0.9.0-alpha, azael.devel@gmail.com)
+AC_INIT(pkmt, 0.10.0-alpha, azael.devel@gmail.com)
 
 AC_CONFIG_HEADERS([config.h])
 
@@ -25,7 +25,6 @@ PKG_CHECK_MODULES(LIBCONFIG,libconfig++)
 
 
 
-PKG_CHECK_MODULES(BDT,bdt)
 
 PKG_CHECK_MODULES(CUNIT,cunit)
 

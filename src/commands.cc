@@ -38,7 +38,6 @@
 #include "config.h"
 #include "Shell.hh"
 
-
 namespace pkmt
 {
 
@@ -58,8 +57,8 @@ void Interpret::basic(int argc, char* argv[])
 		}		
 	}
 	#ifdef DEBUG
-	sourcesDir = configure->getRoot_Repository() + "/sources/lfs/" + version.toString();
-	packagesDir = configure->getRoot_Repository() + "/packages/lfs/" + version.toString() + "/basic";
+	sourcesDir = configure->getRootDir() + "/sources/lfs/" + version.toString();
+	packagesDir = configure->getRootDir() + "/packages/lfs/" + version.toString() + "/basic";
 	#else
 	sourcesDir = ((bdt::HeaderLFS*)configure)->getLFS() + "/tools/sources";
 	packagesDir = ((bdt::HeaderLFS*)configure)->getLFS() + "/tools/tmpsys";
@@ -178,11 +177,11 @@ void Interpret::package(int argc, char* argv[])
 			venv.push_back(env);
 			env = new coreutils::Enviroment();
 			env->name = "LFS_TGT";
-			env->value = ((bdt::HeaderLFS*)configure)->getLFS_TGT();
+			env->value = configure->getTarget();
 			venv.push_back(env);
 			env = new coreutils::Enviroment();
 			env->name = "LFS";
-			env->value = ((bdt::HeaderLFS*)configure)->getLFS();
+			env->value = configure->getRootDir();
 			venv.push_back(env);
 			env = new coreutils::Enviroment();
 			env->name = "PKNAME";
@@ -235,7 +234,7 @@ void Interpret::package(int argc, char* argv[])
 
 
 
-Interpret::Interpret(const bdt::Header& configure)
+Interpret::Interpret(const Header& configure)
 {
 	this->configure = &configure;
 }
