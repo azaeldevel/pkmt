@@ -41,7 +41,7 @@ namespace pkmt
 		HeaderLFS conf;
 		db = conf.getRootDir() + "/etc/pkmt";	
 	}
-	int Database::install(const std::string& pk,Shell& shell)
+	int Database::record(const std::string& pk,Shell& shell)
 	{
 		if(!shell.exists(db))
 		{
@@ -50,7 +50,7 @@ namespace pkmt
 		}
 		
 		int ret2 = shell.touch(db+"/"+pk);
-		if(ret2 != 0) return ret2;
+		//if(ret2 != 0) return ret2;
 		
 		return 0;
 	}

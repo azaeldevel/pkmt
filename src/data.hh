@@ -291,7 +291,7 @@ private:
 	std::string db;
 public:
 	Database();
-	int install(const std::string&,Shell& shell);
+	int record(const std::string&,Shell& shell);
 	bool is(const std::string&,Shell& shell);
 	const std::string& getDB() const;
 };

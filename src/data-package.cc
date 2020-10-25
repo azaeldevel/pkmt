@@ -76,23 +76,6 @@ namespace pkmt
 	*/
 	int Package::install(Shell& s)
 	{
-		if(levelexe == 1)
-		{
-			std::string script = filename + "/" + (const std::string&)base;	
-			int ret = s.execute(script);
-			bool ret2;
-			if(ret == 0)
-			{
-				Database db;
-				ret2 = db.install(name,s);
-				if(ret2 != 0) return ret2;
-				return 0;
-			}
-			else
-			{
-				return ret;
-			}
-		}
 		
 		return 1;
 	}
@@ -112,7 +95,7 @@ namespace pkmt
 			if(ret == 0)
 			{
 				Database db;
-				ret2 = db.install(name,s);
+				ret2 = db.record(name,s);
 				if(ret2 != 0) return ret2;
 				return 0;
 			}
@@ -126,7 +109,7 @@ namespace pkmt
 			//TODO:solo deve haver un script
 		}
 		
-		return 1;
+		return 0;
 	}
 	
 	void Package::createStackDeps(std::list<Package*>& stack)const
