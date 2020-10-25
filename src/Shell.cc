@@ -97,32 +97,38 @@ std::string Shell::getfilename_url(const std::string& url)
 }
 int Shell::mkdir(const std::string& path,bool recursive) 
 {
-   	std::vector<std::string> result;
-   	std::stringstream s_stream(path); //create string stream from the string
-   	while(s_stream.good()) 
+	if(recursive)
+	{
+	   	std::vector<std::string> result;
+	   	std::stringstream s_stream(path); //create string stream from the string
+	   	while(s_stream.good()) 
+	   	{
+		  	std::string substr;
+		  	getline(s_stream, substr, '/'); //get first string delimited by /
+		  	result.push_back(substr);
+	   	}
+	   	
+	   	std::string newpath ;
+	   	for(const std::string& s : result)
+	   	{   		
+	   		//newpath += "/";
+	   		newpath += s + "/";
+	   		//std::cout << newpath << "\n"; 
+	   		//int retmk = exists(newpath);
+	   		if(!exists(newpath)) 
+	   		{
+	   			if(!coreutils::Shell::mkdir(newpath))
+	   			{
+	   				std::cerr << "no se pudo crear " << newpath << "\n";
+	   				return 1;
+	   			}
+	   		}
+	   	}
+   	}
+   	else
    	{
-      	std::string substr;
-      	getline(s_stream, substr, '/'); //get first string delimited by comma
-      	result.push_back(substr);
+   		
    	}
-   	
-   	std::string newpath ;
-   	for(const std::string& s : result)
-   	{   		
-   		//newpath += "/";
-   		newpath += s + "/";
-   		//std::cout << newpath << "\n"; 
-   		//int retmk = exists(newpath);
-   		if(!exists(newpath)) 
-   		{
-   			if(!coreutils::Shell::mkdir(newpath))
-   			{
-   				std::cerr << "no se pudo crear " << newpath << "\n";
-   				return 1;
-   			}
-   		}
-   	}
-   	
    	return 0;
 }
 size_t Shell::write_data(void *ptr, size_t size, size_t nmemb, void *stream)

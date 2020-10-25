@@ -192,8 +192,9 @@ public:
 	bool pre_install();
 	int install(Shell&);
 	bool pos_install();
-	bool build();
 	bool packing();//crea paquete binario
+
+	int build(Shell&);//nivel 1;
 	bool distribute();//colocar en el repositorio final
 	
 	
@@ -290,7 +291,7 @@ private:
 	std::string db;
 public:
 	Database();
-	bool install(const std::string&,Shell& shell);
+	int install(const std::string&,Shell& shell);
 	bool is(const std::string&,Shell& shell);
 	const std::string& getDB() const;
 };

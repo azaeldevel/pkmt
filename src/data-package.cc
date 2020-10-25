@@ -69,7 +69,11 @@ namespace pkmt
 	}
 	
 	
-	
+	/**
+	*\brief Ejecutas las lla a su script anteceso y luego ejecuta el correpondiente para que se realiza la instalcion
+	*
+	*
+	*/
 	int Package::install(Shell& s)
 	{
 		if(levelexe == 1)
@@ -80,14 +84,50 @@ namespace pkmt
 			if(ret == 0)
 			{
 				Database db;
-				ret2 = db.install(name,s);//TODO:Que pasa si falla el registro en BD
+				ret2 = db.install(name,s);
+				if(ret2 != 0) return ret2;
+				return 0;
 			}
-			return ret;
+			else
+			{
+				return ret;
+			}
 		}
 		
-		return -1;
+		return 1;
 	}
 	
+	/**
+	*\brief Ejecutas las lla a su script anteceso y luego ejecuta el correpondiente para que se realiza la instalcion
+	*
+	*
+	*/
+	int Package::build(Shell& s)
+	{
+		if(levelexe == 1)
+		{
+			std::string script = filename + "/" + (const std::string&)base;	
+			int ret = s.execute(script);
+			bool ret2;
+			if(ret == 0)
+			{
+				Database db;
+				ret2 = db.install(name,s);
+				if(ret2 != 0) return ret2;
+				return 0;
+			}
+			else
+			{
+				return ret;
+			}
+		}
+		else
+		{
+			//TODO:solo deve haver un script
+		}
+		
+		return 1;
+	}
 	
 	void Package::createStackDeps(std::list<Package*>& stack)const
 	{

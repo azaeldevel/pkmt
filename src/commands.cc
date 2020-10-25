@@ -35,7 +35,6 @@
 
 
 #include "commands.hh"
-#include "data.hh"
 #include "config.h"
 #include "Shell.hh"
 
@@ -44,204 +43,13 @@ namespace pkmt
 {
 
 
-int BuilderLFS::croostoolchain(int argc, char* argv[])
+void Interpret::basic(int argc, char* argv[])
 {
-	//std::cout << "Step 1 :  BuilderLFS::tmpsys \n";
-	pkmt::Repository* repo;
-	octetos::core::Semver ver;
-	std::string dir;
-	try
-	{
-		if(argc > 1)
-		{
-			if(strcmp(argv[0],"--version") == 0 and argv[1] != NULL)
-			{
-				ver.set(argv[1]);
-				((bdt::HeaderLFS*)configure)->setVersion(ver);
-			}
-			else
-			{
-				std::cerr << "Especifique los parametros de cross-toolcahin\n";
-			}
-		}
-		else
-		{
-			std::cerr << "Especifique los parametros de cross-toolcahin\n";
-		}
-		std::string rootrepo = ((bdt::HeaderLFS*)configure)->getRoot_Repository() ;
-		std::cout << "Buscando repositorio de paquetes en :" << rootrepo << " \n";
-		repo = new Repository(rootrepo,ver);	
-	}
-	catch(const libconfig::FileIOException &fioex)
-	{
-		std::cerr << "\n" << fioex.what() << "\n";
-		return 0;
-	}
-	//std::cout << "Step 2 :  BuilderLFS::tmpsys \n";
-	//std::cout << "\n";
-	//std::cout << "Name repos : " << repo.getName() << "\n";
-
-	
-	pkmt::Package* pktmpsys = repo->find("cross-toolchain");
-	if(pktmpsys == NULL)
-	{
-		std::cerr << "No se encontro el paquete cross-toolchain\n";
-		return 0;
-	}
-	else
-	{
-		//std::cout << "Paquete : " << pktmpsys->getName() << " in " << pktmpsys->getFilename() << "\n";
-
-		try
-		{
-			pktmpsys->readDependencies();
-		}
-		catch(pkmt::NotFoundDependencyException e)
-		{
-			std::cerr << "Fallo la lectura de dependencias\n";
-			std::cerr << e.what() << "\n";
-		}
-		catch(std::exception& e)
-		{
-			std::cerr << "Fallo la lectura de dependencias\n";
-			std::cerr << e.what() << "\n";
-			return 0;
-		}
-		
-		char sandbox_template[] = "/tmp/sandbox-XXXXXX";
-        char *sandbox_name = mkdtemp(sandbox_template);
-        //std::cout << "sandbox=" << sandbox_name << "\n";
-		std::list<Package*> stack;
-		pktmpsys->createStackDeps(stack);
-		coreutils::Enviroment* env;
-		bdt::HeaderLFS confglfs;
-		std::vector<coreutils::Enviroment*>* venv;
-		Shell shell;
-		
-		
-		for(Package* pk : stack)
-		{
-			shell.cd(sandbox_name);
-			std::vector<coreutils::Enviroment*> venv;			
-			env = new coreutils::Enviroment();
-			env->name = "LFS_TGT";
-			env->value = confglfs.getLFS_TGT();
-			venv.push_back(env);
-			env = new coreutils::Enviroment();
-			env->name = "LFS";
-			env->value = confglfs.getLFS();
-			venv.push_back(env);
-			env = new coreutils::Enviroment();
-			env->name = "PKNAME";
-			env->value = pk->getName();
-			venv.push_back(env);
-			env = new coreutils::Enviroment();
-			env->name = "PKVER";
-			env->value = pk->getVersion();
-			venv.push_back(env);
-			env = new coreutils::Enviroment();
-			env->name = "SANDBOX";
-			env->value = sandbox_name;
-			std::cout <<">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n";
-			std::cout <<">> Installing package : " << pk->getName() << "\n";
-			std::cout <<">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n";
-			int st = pk->install(shell);
-			if(st == 130)
-			{
-				std::cerr << "\n\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n";
-				std::cerr << ">> Manulmente terminado (ctrl + c)\n";
-				std::cerr << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n";
-				return 0;
-			}
-			else if(st > 0)
-			{
-				
-				std::cerr << "\n\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n";
-				std::cerr << ">> Eror detectado ..\n";
-				std::cerr << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n";
-				return 0;
-			}
-			for(coreutils::Enviroment* env : venv)
-			{
-				delete env;
-			}
-			
-		}
-	}
-	
-	return 0;
-}
-
-int BuilderLFS::imports(int argc, char* argv[])
-{
-	std::string web,md5sums;
-	for(int i = 0; i < argc ; i++)
-	{
-		if(strcmp(argv[i],"--web") == 0 and argv[i+1] != NULL)
-		{
-			web = argv[i+1];
-			i++;
-		}		
-		if(strcmp(argv[i],"--md5sums") == 0 and argv[i+1] != NULL)
-		{
-			md5sums = argv[i+1];
-			i++;
-		}	
-	}
-	std::cout << "Importando archivos '" << web << "'...\n";
-	
-	std::ifstream webfile(web);
-	std::string line;
-	std::string repo = ((bdt::HeaderLFS*)configure)->getREPO_SOURCES();
-	if(!shell.exists(repo))
-	{
-		if(shell.mkdir(repo.c_str(),true) > 0)
-		{
-			std::cerr << "Falló al crear el archivo el archivo '" << repo << "'\n";
-			return 1;
-		}
-		else
-		{
-			//std::cout << "Se creo : " << repo << ".\n";
-		}
-	}
-	shell.cd(repo);
-	while (std::getline(webfile, line))
-	{
-		std::cout << line << "\n";		
-		//shell.wget(line);
-		//std::cout << "Creando : " << shell.getfilename_url(line) << "\n";
-	}
-	
-	/*std::list<Shell::pair_md5> md5sum_list;
-	std::ifstream md5file(md5sums);
-	while (std::getline(md5file, line))
-	{
-		//std::cout << line << "\n";	
-		if(!shell.getMD5s(md5sum_list,line))
-		{
-			std::cerr << "Falló con : " << line << "\n";
-			return false;
-		}
-	}*/
-	
-	
-	return 0;
-}
-
-
-void BuilderLFS::package(int argc, char* argv[])
-{
-	//std::cout << "Step 1 :  BuilderLFS::tmpsys \n";
-	pkmt::Repository repo;
-	std::string dir, packageName,sourcesDir,packagesDir;
-	octetos::core::Semver ver;
-
 	for(int i = 0; i < argc; i++)
 	{
 		if(strcmp(argv[i],"--version") == 0 and argv[i+1] != NULL and i+1 <= argc)
 		{
-			ver.set(argv[i+1]);
+			version.set(argv[i+1]);
 			i++;
 		}
 		else
@@ -250,8 +58,8 @@ void BuilderLFS::package(int argc, char* argv[])
 		}		
 	}
 	#ifdef DEBUG
-	sourcesDir = configure->getRoot_Repository() + "/sources/lfs/" + ver.toString();
-	packagesDir = configure->getRoot_Repository() + "/packages/lfs/" + ver.toString();
+	sourcesDir = configure->getRoot_Repository() + "/sources/lfs/" + version.toString();
+	packagesDir = configure->getRoot_Repository() + "/packages/lfs/" + version.toString() + "/basic";
 	#else
 	sourcesDir = ((bdt::HeaderLFS*)configure)->getLFS() + "/tools/sources";
 	packagesDir = ((bdt::HeaderLFS*)configure)->getLFS() + "/tools/tmpsys";
@@ -267,10 +75,52 @@ void BuilderLFS::package(int argc, char* argv[])
 		std::cerr << "\n" << fioex.what() << "\n";
 		return;
 	}
+	
+	package(argc,argv);
+}
+
+void Interpret::tmpsys(int argc, char* argv[])
+{
+	//std::cout << "Step 1 :  BuilderLFS::tmpsys \n";	
+	for(int i = 0; i < argc; i++)
+	{
+		if(strcmp(argv[i],"--version") == 0 and argv[i+1] != NULL and i+1 <= argc)
+		{
+			version.set(argv[i+1]);
+			i++;
+		}
+		else
+		{
+			packageName = argv[i];
+		}		
+	}
+	#ifdef DEBUG
+	sourcesDir = configure->getRoot_Repository() + "/sources/lfs/" + version.toString();
+	packagesDir = configure->getRoot_Repository() + "/packages/lfs/" + version.toString() + "/tmpsys";
+	#else
+	sourcesDir = ((bdt::HeaderLFS*)configure)->getLFS() + "/tools/sources";
+	packagesDir = ((bdt::HeaderLFS*)configure)->getLFS() + "/tools/tmpsys";
+	#endif
+	try
+	{
+		
+		std::cout << "Buscando repositorio de paquetes en : " << packagesDir << " \n";
+		repo = packagesDir;
+	}
+	catch(const libconfig::FileIOException &fioex)
+	{
+		std::cerr << "\n" << fioex.what() << "\n";
+		return;
+	}
+	
+	package(argc,argv);
+}
+
+void Interpret::package(int argc, char* argv[])
+{	
 	//std::cout << "Step 2 :  BuilderLFS::tmpsys \n";
 	//std::cout << "\n";
 	//std::cout << "Name repos : " << repo.getName() << "\n";
-
 	
 	pkmt::Package* pktmpsys = repo.find(packageName);
 	if(pktmpsys == NULL)
@@ -306,7 +156,6 @@ void BuilderLFS::package(int argc, char* argv[])
 		coreutils::Enviroment* env;
 		//bdt::HeaderLFS confglfs;
 		std::vector<coreutils::Enviroment*>* venv;
-		Shell shell;
 		std::list<std::string> installed;
 		Database db;
 		shell.cd(db.getDB());
@@ -351,7 +200,7 @@ void BuilderLFS::package(int argc, char* argv[])
 			std::cout <<">> Installing package : " << pk->getName() << "\n";
 			std::cout <<">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n";
 			shell.set(venv);
-			int st = pk->install(shell);
+			int st = pk->build(shell);
 			if(st == 130)
 			{
 				std::cerr << "\n\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n";
@@ -385,10 +234,7 @@ void BuilderLFS::package(int argc, char* argv[])
 
 
 
-BuilderLFS::BuilderLFS(const bdt::Header& configure) : Interpret(configure)
-{
 
-}
 Interpret::Interpret(const bdt::Header& configure)
 {
 	this->configure = &configure;
@@ -402,21 +248,20 @@ void Interpret::writeParamschar (std::string& argout, int argc, char *argv[])
 }
 void Interpret::lfs(int argc, char* argv[])
 {
-	
-	/*else if(strcmp(argv[0],"imports") == 0)
+	if(strcmp(argv[0],"tmpsys") == 0)
 	{
-		BuilderLFS buider(*configure);
-		buider.imports(argc-1,argv+1);
+		tmpsys(argc,argv);
 	}
-	else if(strcmp(argv[0],"cross-toolschain") == 0)
+	else if(strcmp(argv[0],"basic") == 0)
 	{
-		BuilderLFS buider(*configure);
-		buider.croostoolchain(argc-1,argv+1);
-	}*/
-	
-	
-	BuilderLFS buider(*configure);
-	buider.package(argc,argv);	
+		basic(argc,argv);
+	}
+	else
+	{
+		std::string msg = "En pkmt, ";
+		msg = msg + "'" + argv[0] + "' commando desconocida.";
+		throw msg;
+	}	
 }
 void Interpret::execute(int argc, char* argv[])
 {
@@ -437,6 +282,11 @@ void Interpret::pkmt(int argc, char* argv[])
 	if(strcmp(argv[0],"lfs") == 0)
 	{
 		lfs(argc-1,argv+1);
+	}
+	else if(strcmp(argv[0],"--help") == 0)
+	{
+		std::cout << "pkmt lfs tmpsys version\n";
+		std::cout << "pkmt lfs basic version\n";
 	}
 	else
 	{

@@ -41,16 +41,18 @@ namespace pkmt
 		bdt::HeaderLFS conf;
 		db = conf.getLFS() + "/etc/pkmt";	
 	}
-	bool Database::install(const std::string& pk,Shell& shell)
+	int Database::install(const std::string& pk,Shell& shell)
 	{
 		if(!shell.exists(db))
 		{
-			shell.mkdir(db,true);
+			int ret  = shell.mkdir(db,true);
+			if(ret != 0) return ret;
 		}
 		
-		shell.touch(db+"/"+pk);
+		int ret2 = shell.touch(db+"/"+pk);
+		if(ret2 != 0) return ret2;
 		
-		return true;
+		return 0;
 	}
 	
 	bool Database::is(const std::string& pk,Shell& shell)
