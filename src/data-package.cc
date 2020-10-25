@@ -366,7 +366,7 @@ namespace pkmt
 		
 		try
 		{
-			virtualpk = (const std::string&)cfg.lookup("virtual");
+			virtualpk = (bool)cfg.lookup("virtual");
 		}
 		catch(const libconfig::SettingNotFoundException &nfex)
 		{

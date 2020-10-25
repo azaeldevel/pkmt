@@ -178,7 +178,7 @@ void Interpret::package(const std::string& pk)
 		//bdt::HeaderLFS confglfs;
 		//std::vector<coreutils::Enviroment*>* venv;
 		std::list<std::string> installed;
-		shell.cd(db.getDB());
+		shell.cd(repo.getDatabase().getDB());
 		shell.ls(installed);
 		std::list<std::string>::iterator it;
 		

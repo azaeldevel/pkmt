@@ -289,7 +289,6 @@ public:
 	const Phase& getPhase()const;
 	const Base& getBase()const;
 	
-	
 	const std::string& operator = (const std::string&);
 	operator const std::string&()const;
 	Package* find(const std::string& name);
