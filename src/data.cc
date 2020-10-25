@@ -27,7 +27,6 @@
 
 
 #include "data.hh"
-#include "Shell.hh"
 #include "header.hh"
 
 
@@ -40,7 +39,7 @@ namespace pkmt
 	Database::Database()
 	{
 		HeaderLFS conf;
-		db = conf.getLFS() + "/etc/pkmt";	
+		db = conf.getRootDir() + "/etc/pkmt";	
 	}
 	int Database::install(const std::string& pk,Shell& shell)
 	{

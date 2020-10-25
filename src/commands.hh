@@ -24,7 +24,7 @@
 #ifndef PKMT_COMMANDS
 #define PKMT_COMMANDS
 
-#include "Shell.hh"
+
 #include "data.hh"
 #include "header.hh"
 
@@ -38,7 +38,7 @@ private:
 	void pkmt(int argc, char* argv[]);
 	void lfs(int argc, char* argv[]);
 	void writeParamschar (std::string& argout, int argc, char *argv[]);
-	pkmt::Repository repo;
+	Repository repo;
 	std::string dir, packageName,sourcesDir,packagesDir;
 	octetos::core::Semver version;
 
@@ -51,7 +51,7 @@ public:
 	void execute(int argc, char* argv[]);
 	void tmpsys(int argc, char* argv[]);
 	void basic(int argc, char* argv[]);
-	void package(int argc, char* argv[]);
+	void package(const std::string&);
 };
 
 

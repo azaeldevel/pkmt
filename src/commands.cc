@@ -36,7 +36,7 @@
 
 #include "commands.hh"
 #include "config.h"
-#include "Shell.hh"
+
 
 namespace pkmt
 {
@@ -75,7 +75,7 @@ void Interpret::basic(int argc, char* argv[])
 		return;
 	}
 	
-	package(argc,argv);
+	package("basic");
 }
 
 void Interpret::tmpsys(int argc, char* argv[])
@@ -112,16 +112,16 @@ void Interpret::tmpsys(int argc, char* argv[])
 		return;
 	}
 	
-	package(argc,argv);
+	package("tmpsys");
 }
 
-void Interpret::package(int argc, char* argv[])
+void Interpret::package(const std::string& pk)
 {	
-	//std::cout << "Step 2 :  BuilderLFS::tmpsys \n";
+	//std::cout << "Step 1 :  Interpret::package \n";
 	//std::cout << "\n";
 	//std::cout << "Name repos : " << repo.getName() << "\n";
 	
-	pkmt::Package* pktmpsys = repo.find(packageName);
+	pkmt::Package* pktmpsys = repo.find(pk);
 	if(pktmpsys == NULL)
 	{
 		std::cerr << "No se encontro el paquete " << packageName << "\n";
@@ -154,7 +154,7 @@ void Interpret::package(int argc, char* argv[])
 		pktmpsys->createStackDeps(stack);
 		coreutils::Enviroment* env;
 		//bdt::HeaderLFS confglfs;
-		std::vector<coreutils::Enviroment*>* venv;
+		//std::vector<coreutils::Enviroment*>* venv;
 		std::list<std::string> installed;
 		Database db;
 		shell.cd(db.getDB());
@@ -164,8 +164,9 @@ void Interpret::package(int argc, char* argv[])
 		for(Package* pk : stack)
 		{
 			it = std::find(installed.begin(),installed.end(),pk->getName());
-			if(it == installed.end())//si ya esta instalado
+			if(it != installed.end())//si ya esta instalado
 			{
+				//std::cout << pk->getName() << " ya esta instalado.\n";
 				continue;//salata hacia el siguiente paquete
 			}
 			shell.cd(sandbox_name);
