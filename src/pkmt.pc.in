@@ -1,0 +1,13 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+datarootdir=@datarootdir@
+datadir=@datadir@
+includedir=@prefix@/include
+
+Name: pkmt
+Description: Package Management Tool
+Version: @VERSION@
+Requires: octetos-core
+Libs: -L${libdir} -lpkmt
+Cflags: -I${includedir}

@@ -1,6 +1,6 @@
 
 
-AC_INIT(pkmt, 0.10.2-alpha, azael.devel@gmail.com)
+AC_INIT(pkmt, 0.10.3-alpha, azael.devel@gmail.com)
 
 AC_CONFIG_HEADERS([config.h])
 
@@ -37,4 +37,5 @@ AC_OUTPUT([
 Makefile
 src/Makefile
 tests/Makefile
+src/pkmt.pc
 ])
