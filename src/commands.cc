@@ -57,11 +57,11 @@ void Interpret::basic(int argc, char* argv[])
 		}		
 	}
 	#ifdef DEBUG
-	sourcesDir = configure->getRootDir() + "/sources/lfs/" + version.toString();
-	packagesDir = configure->getRootDir() + "/packages/lfs/" + version.toString() + "/basic";
+	sourcesDir = configure->getRoot_Repository() + "/sources/lfs/" + version.toString();
+	packagesDir = configure->getRoot_Repository() + "/packages/lfs/" + version.toString() + "/basic";
 	#else
-	sourcesDir = ((bdt::HeaderLFS*)configure)->getLFS() + "/tools/sources";
-	packagesDir = ((bdt::HeaderLFS*)configure)->getLFS() + "/tools/tmpsys";
+	sourcesDir = configure->getRootDir()->getLFS() + "/tools/sources";
+	packagesDir = configure->getRootDir()->getLFS() + "/tools/tmpsys";
 	#endif
 	try
 	{
@@ -97,8 +97,8 @@ void Interpret::tmpsys(int argc, char* argv[])
 	sourcesDir = configure->getRoot_Repository() + "/sources/lfs/" + version.toString();
 	packagesDir = configure->getRoot_Repository() + "/packages/lfs/" + version.toString() + "/tmpsys";
 	#else
-	sourcesDir = ((bdt::HeaderLFS*)configure)->getLFS() + "/tools/sources";
-	packagesDir = ((bdt::HeaderLFS*)configure)->getLFS() + "/tools/tmpsys";
+	sourcesDir = configure->getRootDir() + "/tools/sources";
+	packagesDir = configure->getRootDir() + "/tools/tmpsys";
 	#endif
 	try
 	{
