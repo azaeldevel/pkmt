@@ -1,0 +1,65 @@
+# depslib dependency file v1.0
+1694067369 source:/home/azael/develop/octetos/pkmt/0/header.cc
+	"header.hh"
+
+1694066888 /home/azael/develop/octetos/pkmt/0/header.hh
+	<string>
+	<core/src/Version.hh>
+
+1685511622 /home/azael/develop/octetos/core/src/Version.hh
+	"Version-v2.hh"
+	"Version-v3.hh"
+
+1685511622 /home/azael/develop/octetos/core/src/Version-v2.hh
+	<string>
+	<vector>
+	"Error.hh"
+	"Buffer.hh"
+	"common.h"
+
+1685511622 /home/azael/develop/octetos/core/src/Error.hh
+	<string>
+	<exception>
+	"Exception.hh"
+
+1685511622 /home/azael/develop/octetos/core/src/Exception.hh
+	"Exception-v2.hh"
+	"Exception-v3.hh"
+
+1685511622 /home/azael/develop/octetos/core/src/Exception-v2.hh
+	<exception>
+	"core.hh"
+	"Object.hh"
+
+1687061654 /home/azael/develop/octetos/core/src/core.hh
+	<string>
+	<concepts>
+	<execinfo.h>
+	<csignal>
+	"defines.hh"
+	<core/src/defines.hh>
+
+1685511622 /home/azael/develop/octetos/core/src/defines.hh
+
+1685511622 /home/azael/develop/octetos/core/src/Object.hh
+	"defines.hh"
+
+1687061672 /home/azael/develop/octetos/core/src/Exception-v3.hh
+	<exception>
+	<source_location>
+	"core.hh"
+
+1685511622 /home/azael/develop/octetos/core/src/Buffer.hh
+	<list>
+	"defines.hh"
+
+1685511622 /home/azael/develop/octetos/core/src/common.h
+
+1685511622 /home/azael/develop/octetos/core/src/Version-v3.hh
+	<string>
+	<vector>
+	"Error.hh"
+	"Buffer.hh"
+	<core/src/Error.hh>
+	<core/src/Buffer.hh>
+
