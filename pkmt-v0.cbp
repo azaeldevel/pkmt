@@ -13,6 +13,8 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
+					<Add option="-DOCTETOS_PKMT_V0_TDD" />
+					<Add option="-DOCTETOS_PKMT_V0_TDD_PERFORMANCE" />
 				</Compiler>
 			</Target>
 			<Target title="Release">
@@ -29,12 +31,17 @@
 			</Target>
 		</Build>
 		<Compiler>
-			<Add option="-Wall" />
+			<Add option="-Wall -std=c++20 -pedantic" />
 			<Add directory="../../octetos" />
 		</Compiler>
 		<Linker>
 			<Add option="`pkg-config libconfig++-dev --libs&apos; `pkg-config libcurl --libs&apos;" />
 		</Linker>
+		<Unit filename="0/Package.cc" />
+		<Unit filename="0/Package.hh" />
+		<Unit filename="tests/main.cc" />
+		<Unit filename="tests/v0.cc" />
+		<Unit filename="tests/v0.hh" />
 		<Extensions />
 	</Project>
 </CodeBlocks_project_file>
