@@ -68,5 +68,8 @@ void v0_developing()
 
     //std::cout << std::endl;
     //pkmt::print(std::cout,pack1);
+
+    //constexpr pkmt::package _pack2 = {1,3,56,"Package test","Requsito actual"};
+    //constexpr pkmt::Package pack2(_pack2);
 }
 

@@ -23,7 +23,7 @@
 
 #include <string>
 
-#include <core/3/array.hh>
+//#include <core/3/array.hh>
 #include <core/3/tree.hh>
 
 namespace oct::pkmt::v0
